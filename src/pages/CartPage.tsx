@@ -9,6 +9,7 @@ import macbookpro from "../assets/images/macbook-pro.png";
 import ip15promax from "../assets/images/iphone-15-pro-max.png";
 import s24ultra from "../assets/images/samsung-galaxy-s24-ultra.png";
 import dellxps13 from "../assets/images/dell-xps-13-laptop.jpg";
+import {Button} from "@mui/material";
 
 interface CartItem {
     id: number
@@ -79,6 +80,38 @@ const CartPage: React.FC = () => {
     const shipping = subtotal > 50000000 ? 0 : 500000
     const tax = subtotal * 0.08
     const total = subtotal + shipping + tax
+
+    if (cartItems.length === 0) {
+        return (
+            <div style={{minHeight: "100vh", backgroundColor: "#f8fafc", fontFamily: "system-ui, -apple-system, sans-serif",}}>
+                <Header />
+                <main className="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+                    <div className="text-center">
+                        <span style={{ fontSize: 64 }}>🛒</span>
+                        <h1 className="fw-bold fs-2 mt-3" >Giỏ hàng trống</h1>
+                        <p className="text-muted">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
+                        <Button
+                            component={Link}
+                            to="/products"
+                            variant="contained"
+                            sx={{
+                                borderRadius: 2,
+                                fontWeight: 500,
+                                mt: "auto",
+                                backgroundColor: "#FF0800",
+                                "&:hover": {
+                                    backgroundColor: "#32CD32",   // nền khi hover
+                                },
+                            }}
+                        >
+                            Tiếp tục mua sắm
+                        </Button>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        )
+    }
 
     return (
         <div style={{minHeight: "100vh", backgroundColor: "#f8fafc", fontFamily: "system-ui, -apple-system, sans-serif",}}>

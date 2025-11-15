@@ -71,7 +71,7 @@ const Header: React.FC = () => {
                         <Link to="/products?category=camera" className="text-secondary text-decoration-none">
                             Camera
                         </Link>
-                        <Link to="/deals" className="text-danger fw-medium text-decoration-none">
+                        <Link to="/deals" className=" fw-medium text-decoration-none" style={{ color: "#FF0800" }}>
                             Khuyến mại
                         </Link>
                     </Box>
