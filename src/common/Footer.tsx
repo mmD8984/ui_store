@@ -1,5 +1,4 @@
 import { FacebookIcon, TwitterIcon, InstagramIcon, YoutubeIcon, Mail, Phone, MapPin } from "lucide-react"
-import logo from "../assets/images/logo.png";
 import {Box, Typography} from "@mui/material";
 import React from "react";
 import {Link} from "react-router-dom";
@@ -40,23 +39,10 @@ const Footer = () => {
                             style={{fontWeight: "bold", marginBottom: "15px", fontSize: "18px",}}>
                             Liên kết
                         </h5>
-                        <ul
-                            style={{
-                                listStyle: "none",
-                                padding: 0,
-                                margin: 0,
-                            }}
-                        >
+                        <ul style={{listStyle: "none", padding: 0, margin: 0,}}>
                             {["Về chúng tôi", "Sản phẩm", "Khuyến mãi", "Tin tức", "Liên hệ"].map((item, index) => (
                                 <li key={index} style={{ marginBottom: "8px" }}>
-                                    <a
-                                        href="#"
-                                        style={{
-                                            color: "#adb5bd",
-                                            textDecoration: "none",
-                                            transition: "color 0.2s ease",
-                                        }}
-                                    >
+                                    <a href="#" style={{color: "#adb5bd", textDecoration: "none", transition: "color 0.2s ease",}}>
                                         {item}
                                     </a>
                                 </li>
@@ -66,32 +52,13 @@ const Footer = () => {
 
                     {/* Categories */}
                     <div>
-                        <h5
-                            style={{
-                                fontWeight: "bold",
-                                marginBottom: "15px",
-                                fontSize: "18px",
-                            }}
-                        >
+                        <h5 style={{fontWeight: "bold", marginBottom: "15px", fontSize: "18px",}}>
                             Danh mục
                         </h5>
-                        <ul
-                            style={{
-                                listStyle: "none",
-                                padding: 0,
-                                margin: 0,
-                            }}
-                        >
-                            {["Laptop", "Smartphone", "Tai nghe", "Smartwatch", "Phụ kiện"].map((item, index) => (
+                        <ul style={{listStyle: "none", padding: 0, margin: 0,}}>
+                            {["Laptop", "Điện thoại", "Tai nghe", "Đồng hồ", "Cammera"].map((item, index) => (
                                 <li key={index} style={{ marginBottom: "8px" }}>
-                                    <a
-                                        href="#"
-                                        style={{
-                                            color: "#adb5bd",
-                                            textDecoration: "none",
-                                            transition: "color 0.2s ease",
-                                        }}
-                                    >
+                                    <a href="#" style={{color: "#adb5bd", textDecoration: "none", transition: "color 0.2s ease",}}>
                                         {item}
                                     </a>
                                 </li>
@@ -101,90 +68,33 @@ const Footer = () => {
 
                     {/* Contact */}
                     <div>
-                        <h5
-                            style={{
-                                fontWeight: "bold",
-                                marginBottom: "15px",
-                                fontSize: "18px",
-                            }}
-                        >
+                        <h5 style={{fontWeight: "bold", marginBottom: "15px", fontSize: "18px",}}>
                             Liên hệ
                         </h5>
-                        <ul
-                            style={{
-                                listStyle: "none",
-                                padding: 0,
-                                margin: 0,
-                            }}
-                        >
-                            <li
-                                style={{
-                                    marginBottom: "10px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "8px",
-                                }}
-                            >
+                        <ul style={{listStyle: "none", padding: 0, margin: 0,}}>
+                            <li style={{marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px",}}>
                                 <Phone style={{ width: "16px", height: "16px", color: "#adb5bd" }} />
-                                <span style={{ color: "#adb5bd", fontSize: "14px" }}>1900 1234</span>
+                                <span style={{ color: "#adb5bd", fontSize: "14px" }}>1900 8386</span>
                             </li>
-                            <li
-                                style={{
-                                    marginBottom: "10px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "8px",
-                                }}
-                            >
+                            <li style={{marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px",}}>
                                 <Mail style={{ width: "16px", height: "16px", color: "#adb5bd" }} />
-                                <span style={{ color: "#adb5bd", fontSize: "14px" }}>info@techstore.vn</span>
+                                <span style={{ color: "#adb5bd", fontSize: "14px" }}>info@vanhastore.vn</span>
                             </li>
-                            <li
-                                style={{
-                                    display: "flex",
-                                    alignItems: "flex-start",
-                                    gap: "8px",
-                                }}
-                            >
+                            <li style={{display: "flex", alignItems: "flex-start", gap: "8px",}}>
                                 <MapPin style={{ width: "16px", height: "16px", color: "#adb5bd", marginTop: "2px" }} />
-                                <span style={{ color: "#adb5bd", fontSize: "14px" }}>123 Đường ABC, Quận 1, TP.HCM</span>
+                                <span style={{ color: "#adb5bd", fontSize: "14px" }}>265 Đường Lê Văn Việt, Phường Hiệp Phú, Quận 9, TP.HCM</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        borderTop: "1px solid #495057",
-                        paddingTop: "20px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        flexWrap: "wrap",
-                        gap: "15px",
-                    }}
-                >
-                    <p
-                        style={{
-                            color: "#adb5bd",
-                            fontSize: "14px",
-                            margin: 0,
-                        }}
-                    >
-                        © 2025 TechStore. Tất cả quyền được bảo lưu.
+                <div style={{borderTop: "1px solid #495057", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "15px",}}>
+                    <p style={{color: "#adb5bd", fontSize: "14px", margin: 0,}}>
+                        © 2025 VanHaStore. Tất cả quyền được bảo lưu.
                     </p>
                     <div style={{ display: "flex", gap: "20px" }}>
                         {["Điều khoản sử dụng", "Chính sách bảo mật", "Sitemap"].map((item, index) => (
-                            <a
-                                key={index}
-                                href="#"
-                                style={{
-                                    color: "#adb5bd",
-                                    textDecoration: "none",
-                                    fontSize: "14px",
-                                    transition: "color 0.2s ease",
-                                }}
-                            >
+                            <a key={index} href="#" style={{color: "#adb5bd", textDecoration: "none", fontSize: "14px", transition: "color 0.2s ease",}}>
                                 {item}
                             </a>
                         ))}

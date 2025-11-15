@@ -56,23 +56,23 @@ const Header: React.FC = () => {
                 {/* ✅ Dùng Container cùng maxWidth với AppBar để căn lề đều nhau */}
                 <Container maxWidth="lg">
                     <Box display="flex" alignItems="center" gap={3}>
-                        <Link to="/category/laptops" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=laptops" className="text-secondary text-decoration-none">
                             Laptop
                         </Link>
-                        <Link to="/category/smartphones" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=smartphones" className="text-secondary text-decoration-none">
                             Điện thoại
                         </Link>
-                        <Link to="/category/tablets" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=earphones" className="text-secondary text-decoration-none">
                             Tai nghe
                         </Link>
-                        <Link to="/category/accessories" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=wristwatch" className="text-secondary text-decoration-none">
                             Đồng hồ
                         </Link>
-                        <Link to="/category/audio" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=camera" className="text-secondary text-decoration-none">
                             Camera
                         </Link>
                         <Link to="/deals" className="text-danger fw-medium text-decoration-none">
-                            Khuyến mãi
+                            Khuyến mại
                         </Link>
                     </Box>
                 </Container>
