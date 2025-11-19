@@ -1,387 +1,165 @@
-// "use client"
-//
-// import type React from "react"
-// import { useState } from "react"
-// import {Link} from "react-router-dom";
-//
-// interface AuthPageProps {
-//     onBack?: () => void
-// }
-//
-// export default function AuthPage({ onBack }: AuthPageProps) {
-//     const [isLogin, setIsLogin] = useState(true)
-//     const [formData, setFormData] = useState({
-//         email: "",
-//         password: "",
-//         confirmPassword: "",
-//         firstName: "",
-//         lastName: "",
-//     })
-//
-//     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//         setFormData({
-//             ...formData,
-//             [e.target.name]: e.target.value,
-//         })
-//     }
-//
-//     const handleSubmit = (e: React.FormEvent) => {
-//         e.preventDefault()
-//         if (isLogin) {
-//             alert("Đăng nhập thành công!")
-//         } else {
-//             if (formData.password !== formData.confirmPassword) {
-//                 alert("Mật khẩu không khớp!")
-//                 return
-//             }
-//             alert("Đăng ký thành công!")
-//         }
-//     }
-//
-//     // 🎨 Style trắng – xanh dương
-//     const containerStyle: React.CSSProperties = {
-//         minHeight: "100vh",
-//         backgroundColor: "#ffffff",
-//         display: "flex",
-//         alignItems: "center",
-//         justifyContent: "center",
-//         padding: "20px",
-//         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-//     }
-//
-//     const cardStyle: React.CSSProperties = {
-//         backgroundColor: "#ffffff",
-//         border: "1px solid #e0e0e0",
-//         borderRadius: "12px",
-//         padding: "40px",
-//         boxShadow: "0 10px 20px rgba(0, 123, 255, 0.15)",
-//         width: "100%",
-//         maxWidth: "450px",
-//     }
-//
-//     const headerStyle: React.CSSProperties = {
-//         textAlign: "center",
-//         marginBottom: "32px",
-//     }
-//
-//     const titleStyle: React.CSSProperties = {
-//         fontSize: "32px",
-//         fontWeight: "700",
-//         color: "#007bff",
-//         marginBottom: "8px",
-//     }
-//
-//     const subtitleStyle: React.CSSProperties = {
-//         color: "#555",
-//         fontSize: "16px",
-//     }
-//
-//     const backButtonStyle: React.CSSProperties = {
-//         position: "absolute",
-//         top: "24px",
-//         left: "24px",
-//         background: "none",
-//         border: "none",
-//         color: "#007bff",
-//         fontSize: "16px",
-//         cursor: "pointer",
-//         transition: "color 0.2s",
-//     }
-//
-//     const inputGroupStyle: React.CSSProperties = {
-//         marginBottom: "20px",
-//     }
-//
-//     const labelStyle: React.CSSProperties = {
-//         display: "block",
-//         color: "#000000",
-//         fontSize: "14px",
-//         fontWeight: "500",
-//         marginBottom: "8px",
-//     }
-//
-//     const inputStyle: React.CSSProperties = {
-//         width: "100%",
-//         padding: "12px 16px",
-//         backgroundColor: "#ffffff",
-//         border: "1px solid #007bff",
-//         borderRadius: "8px",
-//         color: "#000000",
-//         fontSize: "16px",
-//         outline: "none",
-//         transition: "border-color 0.2s, box-shadow 0.2s",
-//     }
-//
-//     const buttonStyle: React.CSSProperties = {
-//         width: "100%",
-//         padding: "14px",
-//         backgroundColor: "#007bff",
-//         color: "#ffffff",
-//         border: "none",
-//         borderRadius: "8px",
-//         fontSize: "16px",
-//         fontWeight: "600",
-//         cursor: "pointer",
-//         transition: "background-color 0.2s",
-//         marginBottom: "24px",
-//     }
-//
-//     const socialButtonStyle: React.CSSProperties = {
-//         width: "48%",
-//         padding: "12px",
-//         backgroundColor: "#f9f9f9",
-//         color: "#007bff",
-//         border: "1px solid #007bff",
-//         borderRadius: "8px",
-//         fontSize: "14px",
-//         cursor: "pointer",
-//         display: "flex",
-//         alignItems: "center",
-//         justifyContent: "center",
-//         transition: "background-color 0.2s, border-color 0.2s",
-//     }
-//
-//     const linkStyle: React.CSSProperties = {
-//         color: "#007bff",
-//         textDecoration: "none",
-//         fontWeight: "500",
-//         cursor: "pointer",
-//     }
-//
-//     const forgotPasswordStyle: React.CSSProperties = {
-//         textAlign: "right",
-//         marginBottom: "24px",
-//     }
-//
-//     const forgotLinkStyle: React.CSSProperties = {
-//         color: "#007bff",
-//         fontSize: "14px",
-//         textDecoration: "none",
-//         cursor: "pointer",
-//         transition: "color 0.2s",
-//     }
-//
-//     const toggleStyle: React.CSSProperties = {
-//         textAlign: "center",
-//         color: "#555",
-//         fontSize: "14px",
-//     }
-//
-//     const dividerStyle: React.CSSProperties = {
-//         position: "relative",
-//         margin: "24px 0",
-//         textAlign: "center",
-//     }
-//
-//     const dividerLineStyle: React.CSSProperties = {
-//         position: "absolute",
-//         top: "50%",
-//         left: "0",
-//         right: "0",
-//         height: "1px",
-//         backgroundColor: "#e0e0e0",
-//     }
-//
-//     const dividerTextStyle: React.CSSProperties = {
-//         backgroundColor: "#ffffff",
-//         color: "#555",
-//         padding: "0 16px",
-//         fontSize: "14px",
-//         position: "relative",
-//         zIndex: 1,
-//     }
-//
-//     const socialContainerStyle: React.CSSProperties = {
-//         display: "flex",
-//         justifyContent: "space-between",
-//         gap: "12px",
-//     }
-//
-//     const footerStyle: React.CSSProperties = {
-//         marginTop: "32px",
-//         textAlign: "center",
-//         fontSize: "12px",
-//         color: "#555",
-//     }
-//
-//     const rowStyle: React.CSSProperties = {
-//         display: "flex",
-//         gap: "16px",
-//         marginBottom: "20px",
-//     }
-//
-//     const colStyle: React.CSSProperties = {
-//         flex: 1,
-//     }
-//
-//     return (
-//         <div style={containerStyle}>
-//             <Link to='/'>
-//                 <button
-//                     onClick={onBack}
-//                     style={backButtonStyle}
-//                     onMouseEnter={(e) => (e.currentTarget.style.color = "#0056b3")}
-//                     onMouseLeave={(e) => (e.currentTarget.style.color = "#007bff")}
-//                 >
-//                     ← Quay lại
-//                 </button>
-//             </Link>
-//             <div style={cardStyle}>
-//                 <div style={headerStyle}>
-//                     <h1 style={titleStyle}>HaRIP Store</h1>
-//                     <p style={subtitleStyle}>
-//                         {isLogin ? "Đăng nhập vào tài khoản của bạn" : "Tạo tài khoản mới"}
-//                     </p>
-//                 </div>
-//
-//                 <form onSubmit={handleSubmit}>
-//                     {!isLogin && (
-//                         <div style={rowStyle}>
-//                             <div style={colStyle}>
-//                                 <div style={inputGroupStyle}>
-//                                     <label htmlFor="firstName" style={labelStyle}>
-//                                         Họ
-//                                     </label>
-//                                     <input
-//                                         id="firstName"
-//                                         name="firstName"
-//                                         type="text"
-//                                         value={formData.firstName}
-//                                         onChange={handleInputChange}
-//                                         required={!isLogin}
-//                                         style={inputStyle}
-//                                         placeholder="Nhập họ"
-//                                     />
-//                                 </div>
-//                             </div>
-//                             <div style={colStyle}>
-//                                 <div style={inputGroupStyle}>
-//                                     <label htmlFor="lastName" style={labelStyle}>
-//                                         Tên
-//                                     </label>
-//                                     <input
-//                                         id="lastName"
-//                                         name="lastName"
-//                                         type="text"
-//                                         value={formData.lastName}
-//                                         onChange={handleInputChange}
-//                                         required={!isLogin}
-//                                         style={inputStyle}
-//                                         placeholder="Nhập tên"
-//                                     />
-//                                 </div>
-//                             </div>
-//                         </div>
-//                     )}
-//
-//                     <div style={inputGroupStyle}>
-//                         <label htmlFor="email" style={labelStyle}>
-//                             Email
-//                         </label>
-//                         <input
-//                             id="email"
-//                             name="email"
-//                             type="email"
-//                             value={formData.email}
-//                             onChange={handleInputChange}
-//                             required
-//                             style={inputStyle}
-//                             placeholder="your@email.com"
-//                         />
-//                     </div>
-//
-//                     <div style={inputGroupStyle}>
-//                         <label htmlFor="password" style={labelStyle}>
-//                             Mật khẩu
-//                         </label>
-//                         <input
-//                             id="password"
-//                             name="password"
-//                             type="password"
-//                             value={formData.password}
-//                             onChange={handleInputChange}
-//                             required
-//                             style={inputStyle}
-//                             placeholder="••••••••"
-//                         />
-//                     </div>
-//
-//                     {!isLogin && (
-//                         <div style={inputGroupStyle}>
-//                             <label htmlFor="confirmPassword" style={labelStyle}>
-//                                 Xác nhận mật khẩu
-//                             </label>
-//                             <input
-//                                 id="confirmPassword"
-//                                 name="confirmPassword"
-//                                 type="password"
-//                                 value={formData.confirmPassword}
-//                                 onChange={handleInputChange}
-//                                 required={!isLogin}
-//                                 style={inputStyle}
-//                                 placeholder="••••••••"
-//                             />
-//                         </div>
-//                     )}
-//
-//                     {isLogin && (
-//                         <div style={forgotPasswordStyle}>
-//                             <a href="#" style={forgotLinkStyle}>
-//                                 Quên mật khẩu?
-//                             </a>
-//                         </div>
-//                     )}
-//
-//                     <button type="submit" style={buttonStyle}>
-//                         {isLogin ? "Đăng nhập" : "Đăng ký"}
-//                     </button>
-//                 </form>
-//
-//                 <div style={toggleStyle}>
-//                     {isLogin ? "Chưa có tài khoản?" : "Đã có tài khoản?"}
-//                     <button
-//                         type="button"
-//                         onClick={() => setIsLogin(!isLogin)}
-//                         style={{
-//                             ...linkStyle,
-//                             marginLeft: "8px",
-//                             background: "none",
-//                             border: "none",
-//                             fontSize: "14px",
-//                         }}
-//                     >
-//                         {isLogin ? "Đăng ký ngay" : "Đăng nhập"}
-//                     </button>
-//                 </div>
-//
-//                 <div style={dividerStyle}>
-//                     <div style={dividerLineStyle}></div>
-//                     <span style={dividerTextStyle}>Hoặc</span>
-//                 </div>
-//
-//                 <div style={socialContainerStyle}>
-//                     <button type="button" style={socialButtonStyle}>
-//                         Google
-//                     </button>
-//                     <button type="button" style={socialButtonStyle}>
-//                         Facebook
-//                     </button>
-//                 </div>
-//
-//                 <div style={footerStyle}>
-//                     <p>
-//                         Bằng cách tiếp tục, bạn đồng ý với{" "}
-//                         <a href="#" style={{ color: "#007bff", textDecoration: "underline" }}>
-//                             Điều khoản dịch vụ
-//                         </a>{" "}
-//                         và{" "}
-//                         <a href="#" style={{ color: "#007bff", textDecoration: "underline" }}>
-//                             Chính sách bảo mật
-//                         </a>{" "}
-//                         của chúng tôi.
-//                     </p>
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
+import React, {useState} from "react"
+import { Link } from "react-router-dom";
+import {Box, Divider, TextField, Typography} from "@mui/material";
+import {ArrowBack} from "@mui/icons-material";
+
+interface AuthPageProps {
+    onBack?: () => void
+}
+
+const AuthPage = ({onBack}: AuthPageProps) => {
+    const [isLogin, setIsLogin] = useState(true)
+    const [formData, setFormData] = useState({
+        phone: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        name: "",
+    })
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        if(isLogin){
+            alert("Đăng nhập thành công!")
+        } else {
+            if (formData.password !== formData.confirmPassword) {
+                alert("Mật khẩu không khớp!")
+                return
+            }
+            alert("Đăng ký thành công!")
+        }
+    }
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    return (
+        <div style = {{minHeight: "100vh", backgroundColor: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center",}}>
+            <Link to='/'>
+                <button
+                    onClick={onBack}
+                    style={{position: "absolute", top: "24px", left: "24px", background: "none", border: "none", color: "#FF0800", fontSize: "20px", cursor: "pointer", transition: "color 0.2s",}}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#32CD32")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "#FF0800")}>
+                    <ArrowBack fontSize="small" sx={{ mr: 0.5 }} /> Quay lại
+                </button>
+            </Link>
+            <div className="container-fluid">
+                <div className="row min-vh-100">
+                    {/* Left hero / branding */}
+                    <div className="col-lg-6 d-none d-lg-flex align-items-center justify-content-center hero-col">
+                        <Box className="text-center" px={4}>
+                            <div className="d-flex justify-content-center text-decoration-none text-dark mb-5">
+                                <Box sx={{bgcolor: "common.black", width: 120, height: 60, borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center",}}>
+                                    <Typography variant="subtitle1" sx={{ color: "yellow", fontWeight: "bold", fontSize: 32 }}>
+                                        Van Ha
+                                    </Typography>
+                                </Box>
+                                <Typography variant="h2" sx={{ fontWeight: "bold", ml: 1, display: { xs: "none", sm: "block" } }}>
+                                    Store
+                                </Typography>
+                            </div>
+                            <Typography variant="h3" component="h1" fontWeight="bold" sx={{mb: 3, lineHeight: 1.3, "@media (min-width:600px)": { fontSize: "2.5rem" },}}>
+                                Mua sắm vui – giá tốt mỗi ngày
+                            </Typography>
+                            <Typography variant="body1" color="text.secondary">
+                                Đăng nhập để theo dõi đơn hàng, lưu mã giảm giá và trải nghiệm tốt nhất.
+                            </Typography>
+                        </Box>
+                    </div>
+                    {/* Right form */}
+                    <div className="col-12 col-lg-6 d-flex align-items-center justify-content-center">
+                        <div style={{backgroundColor: "#ffffff", border: "1px solid #e0e0e0", borderRadius: "12px", padding: "40px", boxShadow: "0 10px 20px rgba(0, 123, 255, 0.15)", width: "100%", maxWidth: "450px",}}>
+                            <div style={{textAlign: "center", marginBottom: "16px",}}>
+                                <p style={{color: "#000", fontSize: "20px", fontWeight: "bold"}}>
+                                    {isLogin ? "Đăng nhập vào tài khoản của bạn" : "Tạo tài khoản mới"}
+                                </p>
+                            </div>
+                            <form onSubmit={handleSubmit}>
+                                {!isLogin && (
+                                    <TextField fullWidth label="Họ và Tên" name="name" value={formData.name} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
+                                )}
+                                <TextField fullWidth label="Số điện thoại" name="phone" value={formData.phone} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
+
+                                {!isLogin && (
+                                    <TextField fullWidth label="Email" name="email" value={formData.email} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
+                                )}
+                                <TextField fullWidth label="Mật khẩu" name="password" value={formData.password} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
+                                {!isLogin && (
+                                    <TextField fullWidth label="Xác nhận mật khẩu" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
+                                )}
+                                {isLogin && (
+                                    <div style={{textAlign: "right", marginBottom: "24px",}}>
+                                        <Link to="/reset" style={{color: "#FF0800", fontSize: "14px", textDecoration: "none", cursor: "pointer", transition: "color 0.2s",}}>
+                                            Quên mật khẩu?
+                                        </Link>
+                                    </div>
+                                )}
+                                <button
+                                    type="submit"
+                                    style={{
+                                        width: "100%",
+                                        padding: "0.875rem",
+                                        marginTop: "16px",
+                                        backgroundColor: "black",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        fontSize: "1rem",
+                                        fontWeight: "600",
+                                        cursor: "pointer",
+                                        transition: "background-color 0.2s",
+                                    }}
+                                    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#32CD32")}
+                                    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "black")}
+                                >
+                                    {isLogin ? "Đăng nhập" : "Đăng ký"}
+                                </button>
+                            </form>
+                            <div style={{textAlign: "center", fontSize: "14px",}}>
+                                {isLogin ? "Chưa có tài khoản?" : "Đã có tài khoản?"}
+                                <button
+                                    type="button"
+                                    onClick={() => setIsLogin(!isLogin)}
+                                    style={{color: "#FF0800", textDecoration: "none", fontWeight: "500", cursor: "pointer", marginLeft: "8px", background: "none", border: "none", fontSize: "14px",}}>
+                                    {isLogin ? "Đăng ký ngay" : "Đăng nhập"}
+                                </button>
+                            </div>
+                            <Divider sx={{ my: 3 }}>Hoặc</Divider>
+                            <div style={{display: "flex", justifyContent: "space-between", gap: "12px",}}>
+                                <button type="button" style={{width: "48%", padding: "12px", backgroundColor: "#f9f9f9", color: "#000", border: "1px solid #000", borderRadius: "8px", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background-color 0.2s, border-color 0.2s",}}>
+                                    Google
+                                </button>
+                                <button type="button" style={{width: "48%", padding: "12px", backgroundColor: "#f9f9f9", color: "#000", border: "1px solid #000", borderRadius: "8px", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background-color 0.2s, border-color 0.2s",}}>
+                                    Facebook
+                                </button>
+                            </div>
+                            {!isLogin && (
+                                <div style={{marginTop: "32px", textAlign: "center", fontSize: "12px", color: "#555",}}>
+                                    <p>
+                                        Bằng cách tiếp tục, bạn đồng ý với{" "}
+                                        <a href="#" style={{ color: "#007bff", textDecoration: "underline" }}>
+                                            Điều khoản dịch vụ
+                                        </a>{" "}
+                                        và{" "}
+                                        <a href="#" style={{ color: "#007bff", textDecoration: "underline" }}>
+                                            Chính sách bảo mật
+                                        </a>{" "}
+                                        của chúng tôi.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    )
+}
+
+export default AuthPage

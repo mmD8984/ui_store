@@ -40,7 +40,7 @@ const Header: React.FC = () => {
                             </Badge>
                         </IconButton>
 
-                        <IconButton color="inherit" sx={{ display: { xs: "none", md: "inline-flex" } }}>
+                        <IconButton color="inherit" sx={{ display: { xs: "none", md: "inline-flex" } }} component={Link} to="/auth">
                             <User size={20} />
                         </IconButton>
 

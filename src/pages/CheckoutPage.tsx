@@ -122,7 +122,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                         style={{padding: "0.5rem", backgroundColor: "#f1f5f9", border: "none", borderRadius: "8px", color: "#475569", cursor: "pointer", display: "flex", alignItems: "center",}}>
                         <ArrowLeft size={20} />
                     </button>
-                    <CreditCard size={28} style={{ color: "#3b82f6" }} />
+                    <CreditCard size={28} style={{ color: "#0dcaf0" }} />
                     <h1 style={{fontSize: "1.875rem", fontWeight: "700", color: "#1e293b", margin: 0,}}>
                         {currentStep === "success" ? "Đặt hàng thành công" : "Thanh toán"}
                     </h1>
@@ -145,8 +145,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                     (step.key === "payment" && currentStep === "review")
 
                                 return (
-                                    <div key={step.key} style={{display: "flex", alignItems: "center", gap: "0.5rem", color: isActive ? "#3b82f6" : isCompleted ? "#059669" : "#94a3b8",}}>
-                                        <div style={{width: "2rem", height: "2rem", borderRadius: "50%", backgroundColor: isActive ? "#3b82f6" : isCompleted ? "#059669" : "#e2e8f0", color: isActive || isCompleted ? "white" : "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center",}}>
+                                    <div key={step.key} style={{display: "flex", alignItems: "center", gap: "0.5rem", color: isActive ? "#0dcaf0" : isCompleted ? "#32CD32" : "#94a3b8",}}>
+                                        <div style={{width: "2rem", height: "2rem", borderRadius: "50%", backgroundColor: isActive ? "#0dcaf0" : isCompleted ? "#32CD32" : "#e2e8f0", color: isActive || isCompleted ? "white" : "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center",}}>
                                             <Icon size={16} />
                                         </div>
                                         <span style={{fontWeight: isActive ? "600" : "500", fontSize: "0.875rem",}}>
@@ -768,7 +768,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                         style={{
                                             width: "100%",
                                             padding: "0.875rem",
-                                            backgroundColor: "#3b82f6",
+                                            backgroundColor: "black",
                                             color: "white",
                                             border: "none",
                                             borderRadius: "8px",
@@ -777,8 +777,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                             cursor: "pointer",
                                             transition: "background-color 0.2s",
                                         }}
-                                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
-                                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}
+                                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#32CD32")}
+                                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "black")}
                                     >
                                         Tiếp tục đến thanh toán
                                     </button>
@@ -1029,7 +1029,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                             style={{
                                                 flex: 2,
                                                 padding: "0.875rem",
-                                                backgroundColor: "#3b82f6",
+                                                backgroundColor: "black",
                                                 color: "white",
                                                 border: "none",
                                                 borderRadius: "8px",
@@ -1038,8 +1038,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                                 cursor: "pointer",
                                                 transition: "background-color 0.2s",
                                             }}
-                                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
-                                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}
+                                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#32CD32")}
+                                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "black")}
                                         >
                                             Xem lại đơn hàng
                                         </button>
@@ -1085,7 +1085,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                         style={{
                                             fontSize: "1.125rem",
                                             fontWeight: "600",
-                                            color: "#1e293b",
+                                            color: "#FF0800",
                                             margin: "0 0 1rem 0",
                                             display: "flex",
                                             alignItems: "center",
@@ -1125,7 +1125,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                         style={{
                                             fontSize: "1.125rem",
                                             fontWeight: "600",
-                                            color: "#1e293b",
+                                            color: "#FF0800",
                                             margin: "0 0 1rem 0",
                                             display: "flex",
                                             alignItems: "center",
@@ -1180,7 +1180,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                         style={{
                                             flex: 2,
                                             padding: "0.875rem",
-                                            backgroundColor: "#059669",
+                                            backgroundColor: "black",
                                             color: "white",
                                             border: "none",
                                             borderRadius: "8px",
@@ -1193,8 +1193,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onBackToCart }) => {
                                             justifyContent: "center",
                                             gap: "0.5rem",
                                         }}
-                                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#047857")}
-                                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#059669")}
+                                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#32CD32")}
+                                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "black")}
                                     >
                                         <CheckCircle size={20} />
                                         Xác nhận đặt hàng
