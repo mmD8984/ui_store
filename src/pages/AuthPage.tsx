@@ -1,165 +1,336 @@
-import React, {useState} from "react"
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import {Box, Divider, TextField, Typography} from "@mui/material";
-import {ArrowBack} from "@mui/icons-material";
+import {
+    Box,
+    TextField,
+    Typography,
+    Button,
+    Snackbar,
+    Alert,
+    Divider,
+} from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
+import { useForm, Controller } from "react-hook-form";
 
 interface AuthPageProps {
-    onBack?: () => void
+    onBack?: () => void;
 }
 
-const AuthPage = ({onBack}: AuthPageProps) => {
-    const [isLogin, setIsLogin] = useState(true)
-    const [formData, setFormData] = useState({
-        phone: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        name: "",
-    })
+interface FormData {
+    phone: string;
+    email?: string;
+    password: string;
+    confirmPassword?: string;
+    name?: string;
+}
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        if(isLogin){
-            alert("Đăng nhập thành công!")
+const AuthPage = ({ onBack }: AuthPageProps) => {
+    const [isLogin, setIsLogin] = useState(true);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: "",
+        severity: "success" as "success" | "error",
+    });
+
+    const {
+        control,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm<FormData>();
+
+    const onSubmit = (data: FormData) => {
+        if (isLogin) {
+            setSnackbar({
+                open: true,
+                message: "Đăng nhập thành công!",
+                severity: "success",
+            });
         } else {
-            if (formData.password !== formData.confirmPassword) {
-                alert("Mật khẩu không khớp!")
-                return
+            if (data.password !== data.confirmPassword) {
+                setSnackbar({
+                    open: true,
+                    message: "Mật khẩu không khớp!",
+                    severity: "error",
+                });
+                return;
             }
-            alert("Đăng ký thành công!")
+            setSnackbar({
+                open: true,
+                message: "Đăng ký thành công!",
+                severity: "success",
+            });
         }
-    }
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        })
-    }
+    };
 
     return (
-        <div style = {{minHeight: "100vh", backgroundColor: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center",}}>
-            <Link to='/'>
-                <button
+        <Box
+            sx={{
+                minHeight: "100vh",
+                bgcolor: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+        >
+            <Link to="/">
+                <Button
                     onClick={onBack}
-                    style={{position: "absolute", top: "24px", left: "24px", background: "none", border: "none", color: "#FF0800", fontSize: "20px", cursor: "pointer", transition: "color 0.2s",}}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#32CD32")}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = "#FF0800")}>
-                    <ArrowBack fontSize="small" sx={{ mr: 0.5 }} /> Quay lại
-                </button>
+                    startIcon={<ArrowBack />}
+                    sx={{
+                        position: "absolute",
+                        top: 24,
+                        left: 24,
+                        color: "#FF0800",
+                        fontSize: "16px",
+                        "&:hover": { color: "#32CD32" },
+                    }}
+                >
+                    Quay lại
+                </Button>
             </Link>
-            <div className="container-fluid">
-                <div className="row min-vh-100">
-                    {/* Left hero / branding */}
-                    <div className="col-lg-6 d-none d-lg-flex align-items-center justify-content-center hero-col">
-                        <Box className="text-center" px={4}>
-                            <div className="d-flex justify-content-center text-decoration-none text-dark mb-5">
-                                <Box sx={{bgcolor: "common.black", width: 120, height: 60, borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center",}}>
-                                    <Typography variant="subtitle1" sx={{ color: "yellow", fontWeight: "bold", fontSize: 32 }}>
-                                        Van Ha
-                                    </Typography>
-                                </Box>
-                                <Typography variant="h2" sx={{ fontWeight: "bold", ml: 1, display: { xs: "none", sm: "block" } }}>
-                                    Store
-                                </Typography>
-                            </div>
-                            <Typography variant="h3" component="h1" fontWeight="bold" sx={{mb: 3, lineHeight: 1.3, "@media (min-width:600px)": { fontSize: "2.5rem" },}}>
-                                Mua sắm vui – giá tốt mỗi ngày
-                            </Typography>
-                            <Typography variant="body1" color="text.secondary">
-                                Đăng nhập để theo dõi đơn hàng, lưu mã giảm giá và trải nghiệm tốt nhất.
-                            </Typography>
-                        </Box>
-                    </div>
-                    {/* Right form */}
-                    <div className="col-12 col-lg-6 d-flex align-items-center justify-content-center">
-                        <div style={{backgroundColor: "#ffffff", border: "1px solid #e0e0e0", borderRadius: "12px", padding: "40px", boxShadow: "0 10px 20px rgba(0, 123, 255, 0.15)", width: "100%", maxWidth: "450px",}}>
-                            <div style={{textAlign: "center", marginBottom: "16px",}}>
-                                <p style={{color: "#000", fontSize: "20px", fontWeight: "bold"}}>
-                                    {isLogin ? "Đăng nhập vào tài khoản của bạn" : "Tạo tài khoản mới"}
-                                </p>
-                            </div>
-                            <form onSubmit={handleSubmit}>
-                                {!isLogin && (
-                                    <TextField fullWidth label="Họ và Tên" name="name" value={formData.name} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
-                                )}
-                                <TextField fullWidth label="Số điện thoại" name="phone" value={formData.phone} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
 
-                                {!isLogin && (
-                                    <TextField fullWidth label="Email" name="email" value={formData.email} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
-                                )}
-                                <TextField fullWidth label="Mật khẩu" name="password" value={formData.password} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
-                                {!isLogin && (
-                                    <TextField fullWidth label="Xác nhận mật khẩu" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} margin="dense" size="small" variant="outlined" sx={{"& .MuiInputLabel-root": { color: "#555" }, "& .MuiOutlinedInput-input": { color: "#555" }, "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" }, "& .MuiOutlinedInput-root.Mui-focused fieldset": { borderColor: "#555" },}}/>
-                                )}
-                                {isLogin && (
-                                    <div style={{textAlign: "right", marginBottom: "24px",}}>
-                                        <Link to="/reset" style={{color: "#FF0800", fontSize: "14px", textDecoration: "none", cursor: "pointer", transition: "color 0.2s",}}>
-                                            Quên mật khẩu?
-                                        </Link>
-                                    </div>
-                                )}
-                                <button
-                                    type="submit"
-                                    style={{
-                                        width: "100%",
-                                        padding: "0.875rem",
-                                        marginTop: "16px",
-                                        backgroundColor: "black",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "8px",
-                                        fontSize: "1rem",
-                                        fontWeight: "600",
-                                        cursor: "pointer",
-                                        transition: "background-color 0.2s",
-                                    }}
-                                    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#32CD32")}
-                                    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "black")}
-                                >
-                                    {isLogin ? "Đăng nhập" : "Đăng ký"}
-                                </button>
-                            </form>
-                            <div style={{textAlign: "center", fontSize: "14px",}}>
-                                {isLogin ? "Chưa có tài khoản?" : "Đã có tài khoản?"}
-                                <button
-                                    type="button"
-                                    onClick={() => setIsLogin(!isLogin)}
-                                    style={{color: "#FF0800", textDecoration: "none", fontWeight: "500", cursor: "pointer", marginLeft: "8px", background: "none", border: "none", fontSize: "14px",}}>
-                                    {isLogin ? "Đăng ký ngay" : "Đăng nhập"}
-                                </button>
-                            </div>
-                            <Divider sx={{ my: 3 }}>Hoặc</Divider>
-                            <div style={{display: "flex", justifyContent: "space-between", gap: "12px",}}>
-                                <button type="button" style={{width: "48%", padding: "12px", backgroundColor: "#f9f9f9", color: "#000", border: "1px solid #000", borderRadius: "8px", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background-color 0.2s, border-color 0.2s",}}>
-                                    Google
-                                </button>
-                                <button type="button" style={{width: "48%", padding: "12px", backgroundColor: "#f9f9f9", color: "#000", border: "1px solid #000", borderRadius: "8px", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background-color 0.2s, border-color 0.2s",}}>
-                                    Facebook
-                                </button>
-                            </div>
-                            {!isLogin && (
-                                <div style={{marginTop: "32px", textAlign: "center", fontSize: "12px", color: "#555",}}>
-                                    <p>
-                                        Bằng cách tiếp tục, bạn đồng ý với{" "}
-                                        <a href="#" style={{ color: "#007bff", textDecoration: "underline" }}>
-                                            Điều khoản dịch vụ
-                                        </a>{" "}
-                                        và{" "}
-                                        <a href="#" style={{ color: "#007bff", textDecoration: "underline" }}>
-                                            Chính sách bảo mật
-                                        </a>{" "}
-                                        của chúng tôi.
-                                    </p>
-                                </div>
+            <Box
+                sx={{
+                    bgcolor: "#fff",
+                    border: "1px solid #e0e0e0",
+                    borderRadius: 2,
+                    p: 4,
+                    boxShadow: "0 10px 20px rgba(0, 123, 255, 0.15)",
+                    width: "100%",
+                    maxWidth: 450,
+                }}
+            >
+                <Typography
+                    sx={{ textAlign: "center", mb: 2, fontSize: 20, fontWeight: "bold" }}
+                >
+                    {isLogin ? "Đăng nhập vào tài khoản của bạn" : "Tạo tài khoản mới"}
+                </Typography>
+
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    {!isLogin && (
+                        <Controller
+                            name="name"
+                            control={control}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    fullWidth
+                                    label="Họ và Tên"
+                                    margin="dense"
+                                    size="small"
+                                    error={!!errors.name}
+                                    helperText={errors.name?.message}
+                                />
                             )}
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        />
+                    )}
 
-        </div>
-    )
-}
+                    <Controller
+                        name="phone"
+                        control={control}
+                        rules={{ required: "Số điện thoại là bắt buộc" }}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                fullWidth
+                                label="Số điện thoại"
+                                margin="dense"
+                                size="small"
+                                error={!!errors.phone}
+                                helperText={errors.phone?.message}
+                            />
+                        )}
+                    />
 
-export default AuthPage
+                    {!isLogin && (
+                        <Controller
+                            name="email"
+                            control={control}
+                            rules={{
+                                required: "Email là bắt buộc",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Email không hợp lệ",
+                                },
+                            }}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    fullWidth
+                                    label="Email"
+                                    margin="dense"
+                                    size="small"
+                                    error={!!errors.email}
+                                    helperText={errors.email?.message}
+                                />
+                            )}
+                        />
+                    )}
+
+                    <Controller
+                        name="password"
+                        control={control}
+                        rules={{ required: "Mật khẩu là bắt buộc" }}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                fullWidth
+                                type="password"
+                                label="Mật khẩu"
+                                margin="dense"
+                                size="small"
+                                error={!!errors.password}
+                                helperText={errors.password?.message}
+                            />
+                        )}
+                    />
+
+                    {!isLogin && (
+                        <Controller
+                            name="confirmPassword"
+                            control={control}
+                            rules={{
+                                required: "Xác nhận mật khẩu là bắt buộc",
+                                validate: (value) =>
+                                    value === watch("password") || "Mật khẩu không khớp",
+                            }}
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    fullWidth
+                                    type="password"
+                                    label="Xác nhận mật khẩu"
+                                    margin="dense"
+                                    size="small"
+                                    error={!!errors.confirmPassword}
+                                    helperText={errors.confirmPassword?.message}
+                                />
+                            )}
+                        />
+                    )}
+
+                    {isLogin && (
+                        <Box sx={{ textAlign: "right", mb: 3 }}>
+                            <Link
+                                to="/reset"
+                                style={{
+                                    color: "#FF0800",
+                                    fontSize: "14px",
+                                    textDecoration: "none",
+                                    cursor: "pointer",
+                                    transition: "color 0.2s",
+                                }}
+                            >
+                                Quên mật khẩu?
+                            </Link>
+                        </Box>
+                    )}
+
+
+                    <Button
+                        type="submit"
+                        fullWidth
+                        sx={{
+                            mt: 2,
+                            py: 1.5,
+                            bgcolor: "black",
+                            color: "white",
+                            fontWeight: 600,
+                            "&:hover": { bgcolor: "#32CD32" },
+                        }}
+                    >
+                        {isLogin ? "Đăng nhập" : "Đăng ký"}
+                    </Button>
+                </form>
+
+                <Box sx={{ textAlign: "center", mt: 2, fontSize: 14 }}>
+                    {isLogin ? "Chưa có tài khoản?" : "Đã có tài khoản?"}
+                    <Button
+                        onClick={() => setIsLogin(!isLogin)}
+                        sx={{ color: "#FF0800", ml: 1, fontSize: 14 }}
+                    >
+                        {isLogin ? "Đăng ký ngay" : "Đăng nhập"}
+                    </Button>
+                </Box>
+
+                <Divider sx={{ my: 3 }}>Hoặc</Divider>
+
+                <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                    <Button
+                        type="button"
+                        variant="outlined"
+                        sx={{
+                            width: "48%",
+                            bgcolor: "#f9f9f9",
+                            color: "#000",
+                            borderColor: "#000",
+                            borderRadius: 2,
+                            fontSize: 14,
+                            textTransform: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            "&:hover": {
+                                bgcolor: "#eee",
+                                borderColor: "#32CD32",
+                            },
+                        }}
+                    >
+                        Google
+                    </Button>
+
+                    <Button
+                        type="button"
+                        variant="outlined"
+                        sx={{
+                            width: "48%",
+                            bgcolor: "#f9f9f9",
+                            color: "#000",
+                            borderColor: "#000",
+                            borderRadius: 2,
+                            fontSize: 14,
+                            textTransform: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            "&:hover": {
+                                bgcolor: "#eee",
+                                borderColor: "#32CD32",
+                            },
+                        }}
+                    >
+                        Facebook
+                    </Button>
+                </Box>
+
+                {!isLogin && (
+                    <Box sx={{ mt: 4, textAlign: "center", fontSize: 12, color: "#555" }}>
+                        <Typography variant="body2">
+                            Bằng cách tiếp tục, bạn đồng ý với{" "}
+                            <Link to="#" style={{ color: "#007bff", textDecoration: "underline" }}>
+                                Điều khoản dịch vụ
+                            </Link>{" "}
+                            và{" "}
+                            <Link to="#" style={{ color: "#007bff", textDecoration: "underline" }}>
+                                Chính sách bảo mật
+                            </Link>{" "}
+                            của chúng tôi.
+                        </Typography>
+                    </Box>
+                )}
+
+            </Box>
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={3000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+            >
+                <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
+            </Snackbar>
+        </Box>
+    );
+};
+
+export default AuthPage;
