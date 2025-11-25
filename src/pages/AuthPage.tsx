@@ -11,13 +11,13 @@ import {
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
+import { loginWithGoogle, loginWithEmailPassword, registerWithEmailPassword } from "../firebase/firebaseAuth";
 
 interface AuthPageProps {
     onBack?: () => void;
 }
 
 interface FormData {
-    phone: string;
     email?: string;
     password: string;
     confirmPassword?: string;
@@ -39,27 +39,41 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
         formState: { errors },
     } = useForm<FormData>();
 
-    const onSubmit = (data: FormData) => {
-        if (isLogin) {
-            setSnackbar({
-                open: true,
-                message: "Đăng nhập thành công!",
-                severity: "success",
-            });
-        } else {
-            if (data.password !== data.confirmPassword) {
+    const onSubmit = async (data: FormData) => {
+        try {
+            if (isLogin) {
+                const user = await loginWithEmailPassword(data.email!, data.password);
+                const token = await user.getIdToken();
                 setSnackbar({
                     open: true,
-                    message: "Mật khẩu không khớp!",
+                    message: "Đăng nhập thành công!",
+                    severity: "success",
+                });
+            } else {
+                if (data.password !== data.confirmPassword) {
+                    setSnackbar({
+                        open: true,
+                        message: "Mật khẩu không khớp!",
+                        severity: "error",
+                    });
+                    return;
+                }
+                const user = await registerWithEmailPassword(data.email!, data.password);
+                const token = await user.getIdToken();
+                setSnackbar({
+                    open: true,
+                    message: "Đăng ký thành công!",
+                    severity: "success",
+                });
+            }
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setSnackbar({
+                    open: true,
+                    message: error.message,
                     severity: "error",
                 });
-                return;
             }
-            setSnackbar({
-                open: true,
-                message: "Đăng ký thành công!",
-                severity: "success",
-            });
         }
     };
 
@@ -127,46 +141,27 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                     )}
 
                     <Controller
-                        name="phone"
+                        name="email"
                         control={control}
-                        rules={{ required: "Số điện thoại là bắt buộc" }}
+                        rules={{
+                            required: "Email là bắt buộc",
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: "Email không hợp lệ",
+                            },
+                        }}
                         render={({ field }) => (
                             <TextField
                                 {...field}
                                 fullWidth
-                                label="Số điện thoại"
+                                label="Email"
                                 margin="dense"
                                 size="small"
-                                error={!!errors.phone}
-                                helperText={errors.phone?.message}
+                                error={!!errors.email}
+                                helperText={errors.email?.message}
                             />
                         )}
                     />
-
-                    {!isLogin && (
-                        <Controller
-                            name="email"
-                            control={control}
-                            rules={{
-                                required: "Email là bắt buộc",
-                                pattern: {
-                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message: "Email không hợp lệ",
-                                },
-                            }}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    fullWidth
-                                    label="Email"
-                                    margin="dense"
-                                    size="small"
-                                    error={!!errors.email}
-                                    helperText={errors.email?.message}
-                                />
-                            )}
-                        />
-                    )}
 
                     <Controller
                         name="password"
@@ -256,53 +251,29 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
 
                 <Divider sx={{ my: 3 }}>Hoặc</Divider>
 
-                <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
-                    <Button
-                        type="button"
-                        variant="outlined"
-                        sx={{
-                            width: "48%",
-                            bgcolor: "#f9f9f9",
-                            color: "#000",
-                            borderColor: "#000",
-                            borderRadius: 2,
-                            fontSize: 14,
-                            textTransform: "none",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            "&:hover": {
-                                bgcolor: "#eee",
-                                borderColor: "#32CD32",
-                            },
-                        }}
-                    >
-                        Google
-                    </Button>
-
-                    <Button
-                        type="button"
-                        variant="outlined"
-                        sx={{
-                            width: "48%",
-                            bgcolor: "#f9f9f9",
-                            color: "#000",
-                            borderColor: "#000",
-                            borderRadius: 2,
-                            fontSize: 14,
-                            textTransform: "none",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            "&:hover": {
-                                bgcolor: "#eee",
-                                borderColor: "#32CD32",
-                            },
-                        }}
-                    >
-                        Facebook
-                    </Button>
-                </Box>
+                <Button
+                    type="button"
+                    variant="outlined"
+                    onClick={loginWithGoogle}
+                    sx={{
+                        width: "100%",
+                        bgcolor: "#f9f9f9",
+                        color: "#000",
+                        borderColor: "#000",
+                        borderRadius: 2,
+                        fontSize: 14,
+                        textTransform: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        "&:hover": {
+                            bgcolor: "#eee",
+                            borderColor: "#32CD32",
+                        },
+                    }}
+                >
+                    Google
+                </Button>
 
                 {!isLogin && (
                     <Box sx={{ mt: 4, textAlign: "center", fontSize: 12, color: "#555" }}>
