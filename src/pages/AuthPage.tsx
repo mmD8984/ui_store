@@ -43,7 +43,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
         try {
             if (isLogin) {
                 const user = await loginWithEmailPassword(data.email!, data.password);
-                const token = await user.getIdToken();
+                await user.getIdToken();
                 setSnackbar({
                     open: true,
                     message: "Đăng nhập thành công!",
@@ -59,7 +59,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                     return;
                 }
                 const user = await registerWithEmailPassword(data.email!, data.password);
-                const token = await user.getIdToken();
+                await user.getIdToken();
                 setSnackbar({
                     open: true,
                     message: "Đăng ký thành công!",
