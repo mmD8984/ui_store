@@ -12,6 +12,7 @@ import {
 import { ArrowBack } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { loginWithGoogle, loginWithEmailPassword, registerWithEmailPassword } from "../firebase/firebaseAuth";
+import axiosClient from "../api/axiosClient";
 
 interface AuthPageProps {
     onBack?: () => void;
@@ -20,7 +21,7 @@ interface AuthPageProps {
 interface FormData {
     email?: string;
     password: string;
-    confirmPassword?: string;
+    confirmPassword: string;
     name?: string;
 }
 
@@ -42,8 +43,8 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
     const onSubmit = async (data: FormData) => {
         try {
             if (isLogin) {
-                const user = await loginWithEmailPassword(data.email!, data.password);
-                await user.getIdToken();
+                await loginWithEmailPassword(data.email!, data.password);
+                await axiosClient.post("/auth/login", {});
                 setSnackbar({
                     open: true,
                     message: "Đăng nhập thành công!",
@@ -58,8 +59,8 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                     });
                     return;
                 }
-                const user = await registerWithEmailPassword(data.email!, data.password);
-                await user.getIdToken();
+                await registerWithEmailPassword(data.email!, data.password);
+                await axiosClient.post("/auth/register", {});
                 setSnackbar({
                     open: true,
                     message: "Đăng ký thành công!",
@@ -76,6 +77,19 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
             }
         }
     };
+
+    const handleLoginWithGoogle = async () => {
+        try {
+            await loginWithGoogle();
+            await axiosClient.post("/auth/login-google", {});
+            setSnackbar({ open: true, message: "Đăng nhập bằng Google thành công!", severity: "success" });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setSnackbar({ open: true, message: error.message, severity: "error" });
+            }
+        }
+    };
+
 
     return (
         <Box
@@ -254,7 +268,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                 <Button
                     type="button"
                     variant="outlined"
-                    onClick={loginWithGoogle}
+                    onClick={handleLoginWithGoogle}
                     sx={{
                         width: "100%",
                         bgcolor: "#f9f9f9",
