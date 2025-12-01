@@ -15,7 +15,10 @@ axiosClient.interceptors.request.use(
 
         if (user) {
             const token = await user.getIdToken(); // Lấy Firebase ID Token
+            console.log("🔥 Firebase ID Token gửi lên backend:", token);
             config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            console.warn("⚠ Không có user Firebase → Không gửi token lên backend");
         }
         return config;
     },

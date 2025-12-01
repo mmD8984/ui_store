@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Box,
     TextField,
@@ -22,10 +22,10 @@ interface FormData {
     email?: string;
     password: string;
     confirmPassword: string;
-    name?: string;
 }
 
 const AuthPage = ({ onBack }: AuthPageProps) => {
+    const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
     const [snackbar, setSnackbar] = useState({
         open: false,
@@ -38,18 +38,34 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
         handleSubmit,
         watch,
         formState: { errors },
-    } = useForm<FormData>();
+    } = useForm<FormData>({
+        defaultValues: {
+            email: "",
+            password: "",
+            confirmPassword: "",
+        }
+    });
 
     const onSubmit = async (data: FormData) => {
         try {
             if (isLogin) {
-                await loginWithEmailPassword(data.email!, data.password);
-                await axiosClient.post("/auth/login", {});
+                const user = await loginWithEmailPassword(data.email!, data.password);
+                if (!user.emailVerified) {
+                    setSnackbar({
+                        open: true,
+                        message: "Vui lòng xác nhận email trước khi đăng nhập!",
+                        severity: "error",
+                    });
+                    return; // Dừng login
+                }
+                await axiosClient.post("/auth/verify-email", { uid: user.uid });
+                await axiosClient.post("/auth/firebase-login", {});
                 setSnackbar({
                     open: true,
                     message: "Đăng nhập thành công!",
                     severity: "success",
                 });
+                navigate("/");
             } else {
                 if (data.password !== data.confirmPassword) {
                     setSnackbar({
@@ -60,12 +76,13 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                     return;
                 }
                 await registerWithEmailPassword(data.email!, data.password);
-                await axiosClient.post("/auth/register", {});
+                await axiosClient.post("/auth/firebase-login", {});
                 setSnackbar({
                     open: true,
                     message: "Đăng ký thành công!",
                     severity: "success",
                 });
+                setIsLogin(true);
             }
         } catch (error: unknown) {
             if (error instanceof Error) {
@@ -79,15 +96,10 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
     };
 
     const handleLoginWithGoogle = async () => {
-        try {
-            await loginWithGoogle();
-            await axiosClient.post("/auth/login-google", {});
-            setSnackbar({ open: true, message: "Đăng nhập bằng Google thành công!", severity: "success" });
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                setSnackbar({ open: true, message: error.message, severity: "error" });
-            }
-        }
+        await loginWithGoogle();
+        await axiosClient.post("/auth/firebase-login", {});
+        setSnackbar({ open: true, message: "Đăng nhập bằng Google thành công!", severity: "success" });
+        navigate("/");
     };
 
 
@@ -136,24 +148,6 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                 </Typography>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    {!isLogin && (
-                        <Controller
-                            name="name"
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    fullWidth
-                                    label="Họ và Tên"
-                                    margin="dense"
-                                    size="small"
-                                    error={!!errors.name}
-                                    helperText={errors.name?.message}
-                                />
-                            )}
-                        />
-                    )}
-
                     <Controller
                         name="email"
                         control={control}
