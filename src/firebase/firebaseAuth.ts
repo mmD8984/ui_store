@@ -1,17 +1,29 @@
 import { auth, googleProvider } from "./firebase";
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 
 /** --- Google Login --- */
 export const loginWithGoogle = async () => {
     try {
-        googleProvider.setCustomParameters({
-            prompt: "select_account",
-        });
+        googleProvider.setCustomParameters({prompt: "select_account"});
         const result = await signInWithPopup(auth, googleProvider);
         return result.user;
     } catch (error: unknown) {
-        if (error instanceof Error) console.error("Google login error:", error.message);
-        else console.error("Google login error:", error);
+        let message = "Đăng nhập Google thất bại. Vui lòng thử lại.";
+        if (error instanceof FirebaseError) {
+            switch (error.code) {
+                case "auth/popup-closed-by-user":
+                    message = "Bạn đã đóng cửa sổ đăng nhập Google.";
+                    break;
+                case "auth/cancelled-popup-request":
+                    message = "Bạn đang mở quá nhiều cửa sổ đăng nhập.";
+                    break;
+                case "auth/popup-blocked":
+                    message = "Trình duyệt đã chặn cửa sổ đăng nhập Google.";
+                    break;
+            }
+        }
+        throw new Error(message);
     }
 };
 
@@ -21,9 +33,18 @@ export const loginWithEmailPassword = async (email: string, password: string) =>
         const result = await signInWithEmailAndPassword(auth, email, password);
         return result.user;
     } catch (error: unknown) {
-        if (error instanceof Error) console.error("Email login error:", error.message);
-        else console.error("Email login error:", error);
-        throw error;
+        let message = "Đăng nhập thất bại. Vui lòng thử lại.";
+        if (error instanceof FirebaseError) {
+            switch (error.code) {
+                case "auth/invalid-credential":
+                    message = "Email hoặc mật khẩu không đúng.";
+                    break;
+                case "auth/user-disabled":
+                    message = "Tài khoản của bạn đã bị vô hiệu hóa.";
+                    break;
+            }
+        }
+        throw new Error(message);
     }
 };
 
@@ -32,11 +53,24 @@ export const registerWithEmailPassword = async (email: string, password: string)
     try {
         const result = await createUserWithEmailAndPassword(auth, email, password);
         await sendEmailVerification(result.user);
-        console.log("📧 Email xác nhận đã được gửi tới:", email);
         return result.user;
     } catch (error: unknown) {
-        if (error instanceof Error) console.error("Register error:", error.message);
-        else console.error("Register error:", error);
-        throw error;
+        let message = "Đăng ký thất bại. Vui lòng thử lại.";
+        if (error instanceof FirebaseError) {
+            switch (error.code) {
+                case "auth/email-already-in-use":
+                    message = "Email này đã được đăng ký.";
+                    break;
+                case "auth/weak-password":
+                    message = "Mật khẩu quá yếu, vui lòng đặt mật khẩu khác.";
+                    break;
+            }
+        }
+        throw new Error(message);
     }
+};
+
+/** --- Forgot Password --- */
+export const sendPasswordReset = async (email: string) => {
+    await sendPasswordResetEmail(auth, email);
 };

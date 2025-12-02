@@ -13,6 +13,7 @@ import {
 import { ArrowBack } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
+import { sendPasswordReset } from "../firebase/firebaseAuth";
 
 interface FormData {
     account: string;
@@ -34,8 +35,8 @@ const ForgotPasswordPage = () => {
     const [submitted, setSubmitted] = useState(false);
 
 
-    const onSubmit = (data: FormData) => {
-        // TODO: gọi API gửi mail/SMS reset password
+    const onSubmit = async (data: FormData) => {
+        await sendPasswordReset(data.account);
         setSnackbar({
             open: true,
             message: "Yêu cầu đặt lại mật khẩu đã được gửi!",
@@ -85,21 +86,22 @@ const ForgotPasswordPage = () => {
                         <Controller
                             name="account"
                             control={control}
-                            rules={{ required: "Vui lòng nhập email hoặc số điện thoại" }}
+                            rules={{
+                                required: "Email là bắt buộc",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Email không hợp lệ",
+                                },
+                            }}
                             render={({ field }) => (
                                 <TextField
                                     {...field}
-                                    label="Email hoặc số điện thoại"
-                                    margin="normal"
                                     fullWidth
+                                    label="Email"
+                                    margin="dense"
+                                    size="small"
                                     error={!!errors.account}
                                     helperText={errors.account?.message}
-                                    sx={{
-                                        "& .MuiInputLabel-root": { color: "#555" },
-                                        "& .MuiOutlinedInput-input": { color: "#555" },
-                                        "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" },
-                                        "& .MuiOutlinedInput-root.Mui-focused fieldset": {borderColor: "#555",},
-                                    }}
                                 />
                             )}
                         />

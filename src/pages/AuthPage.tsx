@@ -66,6 +66,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                     severity: "success",
                 });
                 navigate("/");
+
             } else {
                 if (data.password !== data.confirmPassword) {
                     setSnackbar({
