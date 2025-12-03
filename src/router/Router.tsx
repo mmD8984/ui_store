@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import PrivateRoute from "@/router/PrivateRoute.tsx"
 
 const HomePage = lazy(() => import("../pages/HomePage"));
 const ProductsPage = lazy(() => import("../pages/ProductsPage"));
@@ -8,6 +9,7 @@ const CartPage = lazy(() => import("../pages/CartPage"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
 const AuthPage = lazy(() => import("../pages/AuthPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
+const AccountPage = lazy(() => import("../pages/AccountPage"));
 
 const Router = () => {
     return (
@@ -17,10 +19,11 @@ const Router = () => {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/products" element={<ProductsPage />} />
                     <Route path="/products/:id" element={<ProductDetail />} />
-                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/cart" element={<PrivateRoute> <CartPage /> </PrivateRoute>} />
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/reset" element={<ForgotPasswordPage />} />
+                    <Route path="/account" element={<PrivateRoute> <AccountPage /> </PrivateRoute>} />
                 </Routes>
             </Suspense>
         </BrowserRouter>

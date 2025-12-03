@@ -80,7 +80,7 @@ const ForgotPasswordPage = () => {
                             color="text.secondary"
                             sx={{ mb: 2, textAlign: "center" }}
                         >
-                            Nhập email hoặc số điện thoại để nhận liên kết đặt lại mật khẩu.
+                            Nhập email để nhận liên kết đặt lại mật khẩu.
                         </Typography>
 
                         <Controller

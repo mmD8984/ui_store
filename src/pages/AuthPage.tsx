@@ -80,7 +80,7 @@ const AuthPage = ({ onBack }: AuthPageProps) => {
                 await axiosClient.post("/auth/firebase-login", {});
                 setSnackbar({
                     open: true,
-                    message: "Đăng ký thành công!",
+                    message: "Đăng ký thành công! Email xác nhận đã được gửi.",
                     severity: "success",
                 });
                 setIsLogin(true);
