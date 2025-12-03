@@ -1,12 +1,32 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom";
-import { AppBar, Toolbar, IconButton, Typography, Badge, Box, Container } from "@mui/material";
-import { ShoppingCart, User, Menu } from "lucide-react";
+import {AppBar, Toolbar, IconButton, Typography, Badge, Box, Container, Menu, MenuItem} from "@mui/material";
+import {MenuIcon, ShoppingCart, User} from "lucide-react";
 import SearchBar from "./SearchBar.tsx";
 import { useCartStore } from "@/lib/cart-store.ts";
+import { useAuth } from "@/contexts/useAuth";
+import { logoutUser } from "../firebase/firebaseAuth";
 
 const Header: React.FC = () => {
     const cartCount = useCartStore((state) => state.getTotalItems());
+    const { user } = useAuth();
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const openMenu = Boolean(anchorEl);
+
+    const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = async () => {
+        await logoutUser();
+        handleCloseMenu();
+    };
+
 
     return (
         <AppBar position="sticky" color="default" elevation={2} sx={{ backdropFilter: "blur(8px)", bgcolor: "rgba(255,255,255,0.9)" }}>
@@ -39,17 +59,41 @@ const Header: React.FC = () => {
                                 <ShoppingCart size={20} />
                             </Badge>
                         </IconButton>
-
-                        <IconButton color="inherit" sx={{ display: { xs: "none", md: "inline-flex" } }} component={Link} to="/auth">
-                            <User size={20} />
-                        </IconButton>
-
-                        <IconButton color="inherit" sx={{ display: { md: "none" } }}>
-                            <Menu size={20} />
-                        </IconButton>
+                        {!user ? (
+                            <IconButton color="inherit"  component={Link} to="/auth">
+                                <User size={20} />
+                            </IconButton>
+                        ) : (
+                            <IconButton color="inherit"
+                                        onClick={handleOpenMenu}
+                            >
+                                <MenuIcon size={20} />
+                            </IconButton>
+                        )}
                     </Box>
                 </Toolbar>
             </Container>
+
+            <Menu
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleCloseMenu}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+            >
+                <MenuItem component={Link} to="/account" onClick={handleCloseMenu}>
+                    Thông tin cá nhân
+                </MenuItem>
+                <MenuItem onClick={handleLogout} sx={{ color: "red", fontWeight: 600 }}>
+                    Đăng xuất
+                </MenuItem>
+            </Menu>
 
             {/* Category Navigation */}
             <Box sx={{borderTop: 1, borderColor: "divider", py: 1, display: { xs: "none", md: "block" }, }}>

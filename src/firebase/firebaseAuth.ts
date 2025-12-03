@@ -1,6 +1,6 @@
 import { auth, googleProvider } from "./firebase";
 import { FirebaseError } from "firebase/app";
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut } from "firebase/auth";
 
 /** --- Google Login --- */
 export const loginWithGoogle = async () => {
@@ -73,4 +73,14 @@ export const registerWithEmailPassword = async (email: string, password: string)
 /** --- Forgot Password --- */
 export const sendPasswordReset = async (email: string) => {
     await sendPasswordResetEmail(auth, email);
+};
+
+/** --- Logout --- */
+export const logoutUser = async () => {
+    try {
+        await signOut(auth);
+        return true;
+    } catch {
+        throw new Error("Đăng xuất thất bại. Vui lòng thử lại.");
+    }
 };
