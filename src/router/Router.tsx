@@ -10,6 +10,7 @@ const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
 const AuthPage = lazy(() => import("../pages/AuthPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
 const AccountPage = lazy(() => import("../pages/AccountPage"));
+const ImagePage = lazy(() => import("../pages/ImagePage"));
 
 const Router = () => {
     return (
@@ -24,6 +25,7 @@ const Router = () => {
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/reset" element={<ForgotPasswordPage />} />
                     <Route path="/account" element={<PrivateRoute> <AccountPage /> </PrivateRoute>} />
+                    <Route path="/upload" element={<ImagePage />} />
                 </Routes>
             </Suspense>
         </BrowserRouter>
