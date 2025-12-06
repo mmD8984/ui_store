@@ -2,27 +2,32 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
 
+interface UploadedImage {
+    url: string;
+    public_id: string;
+}
+
 const UploadImage: React.FC = () => {
-    const [preview, setPreview] = useState<string | null>(null);
-    const [file, setFile] = useState<File | null>(null);
+    const [previews, setPreviews] = useState<string[]>([]);
+    const [files, setFiles] = useState<File[]>([]);
     const [loading, setLoading] = useState(false);
-    const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
-    const [publicId, setPublicId] = useState<string | null>(null);
+    const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
 
+    // Chọn nhiều file
+    const handleChooseFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFiles = event.target.files ? Array.from(event.target.files) : [];
+        setFiles(selectedFiles);
 
-    const handleChooseFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            const selected = event.target.files[0];
-            setFile(selected);
-            setPreview(URL.createObjectURL(selected));
-        }
+        const previewUrls = selectedFiles.map(file => URL.createObjectURL(file));
+        setPreviews(previewUrls);
     };
 
+    // Upload nhiều file
     const handleUpload = async () => {
-        if (!file) return;
+        if (files.length === 0) return;
 
         const formData = new FormData();
-        formData.append("file", file);
+        files.forEach(file => formData.append("file", file));
 
         setLoading(true);
 
@@ -36,8 +41,8 @@ const UploadImage: React.FC = () => {
             );
 
             if (res.data.success) {
-                setUploadedUrl(res.data.url);
-                setPublicId(res.data.public_id);
+                setUploadedImages(res.data.images);
+                // alert("Upload thành công " + res.data.images.length + " ảnh!");
             } else {
                 alert("Upload lỗi: " + res.data.message);
             }
@@ -51,7 +56,7 @@ const UploadImage: React.FC = () => {
     };
 
     return (
-        <Box sx={{ width: "100%", maxWidth: 420, mx: "auto", textAlign: "center", mt: 4 }}>
+        <Box sx={{ width: "100%", maxWidth: 600, mx: "auto", textAlign: "center", mt: 4 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
                 Upload ảnh
             </Typography>
@@ -59,40 +64,54 @@ const UploadImage: React.FC = () => {
             <Box>
                 <Button variant="contained" component="label" sx={{ backgroundColor: "#FF0800" }}>
                     Chọn ảnh
-                    <input type="file" hidden accept="image/*" onChange={handleChooseFile} />
+                    <input
+                        type="file"
+                        multiple
+                        hidden
+                        accept="image/*"
+                        onChange={handleChooseFiles}
+                    />
                 </Button>
             </Box>
 
-            {preview && (
-                <Box sx={{ mt: 2 }}>
-                    <img
-                        src={preview}
-                        alt="preview"
-                        style={{ width: "100%", borderRadius: 8 }}
-                    />
+            {previews.length > 0 && (
+                <Box sx={{ mt: 2, display: "flex", gap: 2, flexWrap: "wrap", justifyContent: "center" }}>
+                    {previews.map((url, index) => (
+                        <img
+                            key={index}
+                            src={url}
+                            alt={`preview-${index}`}
+                            style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: 8 }}
+                        />
+                    ))}
                 </Box>
             )}
 
             <Box>
                 <Button
                     variant="contained"
-                    sx={{ mt: 2, backgroundColor: file ? "#32CD32" : undefined, }}
+                    sx={{ mt: 2, backgroundColor: files.length > 0 ? "#32CD32" : undefined }}
                     onClick={handleUpload}
-                    disabled={loading || !file}
+                    disabled={loading || files.length === 0}
                 >
                     {loading ? <CircularProgress size={24} /> : "Upload"}
                 </Button>
             </Box>
 
-            {uploadedUrl && (
-                <Box sx={{ mt: 2 }}>
-                    <Typography color="green">Upload thành công!</Typography>
-                    <Typography mt={2} sx={{ whiteSpace: "nowrap" }}>
-                        <strong>URL:</strong> {uploadedUrl}
-                    </Typography>
-                    <Typography>
-                        <strong>public_id:</strong> {publicId}
-                    </Typography>
+            {uploadedImages.length > 0 && (
+                <Box sx={{ mt: 4, textAlign: "left" }}>
+                    <Typography color="green" variant="subtitle1" sx={{ textAlign: "center" }}>Upload thành công!</Typography>
+
+                    {uploadedImages.map((img, index) => (
+                        <Box key={index} sx={{ mt: 2 }}>
+                            <Typography>
+                                <strong>URL:</strong> <br /> {img.url}
+                            </Typography>
+                            <Typography>
+                                <strong>public_id:</strong> <br /> {img.public_id}
+                            </Typography>
+                        </Box>
+                    ))}
                 </Box>
             )}
         </Box>
@@ -100,3 +119,4 @@ const UploadImage: React.FC = () => {
 };
 
 export default UploadImage;
+8
