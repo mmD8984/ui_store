@@ -12,7 +12,7 @@ interface FiltersProps {
     selectedCategory: string;
     categories: string[];
     priceRange: number[];
-    onCategoryChange: (category: string) => void;
+    onCategoryChange: (categoryName: string) => void;
     onPriceChange: (range: number[]) => void;
 }
 
@@ -36,15 +36,21 @@ const Filters: React.FC<FiltersProps> = ({
                         <FilterList fontSize="small" /> Danh mục
                     </Typography>
 
-                    {categories.map((cat) => (
+                    {categories.map((catName) => (
                         <Button
-                            key={cat}
-                            variant={selectedCategory === cat ? "contained" : "outlined"}
+                            key={catName}
+                            variant={selectedCategory === catName ? "contained" : "outlined"}
                             fullWidth
-                            sx={{ mb: 1, textTransform: "none", color: selectedCategory === cat ? "#fff" : "#000", backgroundColor: selectedCategory === cat ? "#000" : "transparent", borderColor: "#000" }}
-                            onClick={() => onCategoryChange(cat)}
+                            sx={{
+                                mb: 1,
+                                textTransform: "none",
+                                color: selectedCategory === catName ? "#fff" : "#000",
+                                backgroundColor: selectedCategory === catName ? "#000" : "transparent",
+                                borderColor: "#000"
+                            }}
+                            onClick={() => onCategoryChange(catName)}
                         >
-                            {cat}
+                            {catName}
                         </Button>
                     ))}
                 </CardContent>
@@ -65,9 +71,9 @@ const Filters: React.FC<FiltersProps> = ({
                         max={60000000}
                         step={1000000}
                         sx={{
-                            color: "#000", // thanh slider màu đen
+                            color: "#000",
                             '& .MuiSlider-thumb': {
-                                borderColor: "#000", // viền núm tròn
+                                borderColor: "#000",
                             }
                         }}
                     />

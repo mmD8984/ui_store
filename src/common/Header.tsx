@@ -103,16 +103,16 @@ const Header: React.FC = () => {
                         <Link to="/products?category=laptops" className="text-secondary text-decoration-none">
                             Laptop
                         </Link>
-                        <Link to="/products?category=smartphones" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=phones" className="text-secondary text-decoration-none">
                             Điện thoại
                         </Link>
-                        <Link to="/products?category=earphones" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=headphones" className="text-secondary text-decoration-none">
                             Tai nghe
                         </Link>
-                        <Link to="/products?category=wristwatch" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=watches" className="text-secondary text-decoration-none">
                             Đồng hồ
                         </Link>
-                        <Link to="/products?category=camera" className="text-secondary text-decoration-none">
+                        <Link to="/products?category=cameras" className="text-secondary text-decoration-none">
                             Camera
                         </Link>
                         <Link to="/deals" className=" fw-medium text-decoration-none" style={{ color: "#FF0800" }}>

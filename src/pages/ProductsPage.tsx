@@ -1,49 +1,19 @@
-import React, { useState, useMemo } from "react";
-import Header from "@/common/Header.tsx";
-import Footer from "@/common/Footer.tsx";
-
-import { Typography,} from "@mui/material";
+import React, { useState, useEffect } from "react";
 import {Link} from "react-router-dom";
+import Header from "@/common/Header";
+import Footer from "@/common/Footer";
+import { Typography } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
 
-import Breadcrumbs from "@/components/products/Breadcrumbs.tsx";
-import Filters from "@/components/products/Filters.tsx";
-import Pagination from "@/components/products/Pagination.tsx";
-import SortSelect from "@/components/products/SortSelect.tsx";
-import ProductCard from "@/common/ProductCard.tsx";
+import Breadcrumbs from "@/components/products/Breadcrumbs";
+import Filters from "@/components/products/Filters";
+import Pagination from "@/components/products/Pagination";
+import SortSelect from "@/components/products/SortSelect";
+import ProductCard from "@/common/ProductCard";
 
-import macbookpro from "../assets/images/macbook-pro.png";
-import ip15promax from "../assets/images/iphone-15-pro-max.png";
-import s24ultra from "../assets/images/samsung-galaxy-s24-ultra.png";
-import dellxps13 from "../assets/images/dell-xps-13-laptop.jpg";
-import donghori from "../assets/images/dong-ho-orient-sk.jpg";
-import taingheblt from "../assets/images/tai-nghe-chup-tai-bowers-wilkins-px8.jpg";
-
-const allProducts = [
-    { id: 1, name: 'MacBook Pro 16"', price: 45900000, originalPrice: 59990000, category: "Tai nghe", image: macbookpro, rating: 4.8, reviews: 128 },
-    { id: 2, name: "iPhone 15 Pro", price: 29990000, originalPrice: 59990000, category: "Điện thoại", image: ip15promax, rating: 4.9, reviews: 256 },
-    { id: 3, name: "iPad Air", price: 18990000, originalPrice: 59990000, category: "Đồng hồ", image: s24ultra, rating: 4.7, reviews: 89 },
-    { id: 4, name: "AirPods Max", price: 14990000, originalPrice: 59990000, category: "Camera", image: ip15promax, rating: 4.6, reviews: 154 },
-    { id: 5, name: "Dell XPS 15", price: 39990000, originalPrice: 59990000, category: "Laptop", image: s24ultra, rating: 4.7, reviews: 95 },
-    { id: 6, name: "Samsung Galaxy S24", price: 24990000, originalPrice: 59990000, category: "Điện thoại", image: taingheblt, rating: 4.5, reviews: 187 },
-    { id: 7, name: "Samsung Tab S9", price: 16990000, originalPrice: 59990000, category: "Đồng hồ", image: macbookpro, rating: 4.4, reviews: 67 },
-    { id: 8, name: "Sony WH-1000XM5", price: 8990000, originalPrice: 59990000, category: "Camera", image: donghori, rating: 4.8, reviews: 203 },
-    { id: 9, name: "Lenovo ThinkPad", price: 35990000, originalPrice: 59990000, category: "Tai nghe", image: dellxps13, rating: 4.6, reviews: 112 },
-    { id: 10, name: "Google Pixel 8", price: 22990000, originalPrice: 59990000, category: "Điện thoại", image: dellxps13, rating: 4.7, reviews: 176 },
-    { id: 11, name: "Apple Watch Ultra", price: 12990000, originalPrice: 59990000, category: "Tai nghe", image: donghori, rating: 4.9, reviews: 234 },
-    { id: 12, name: "ASUS ROG Gaming Laptop", price: 55990000, originalPrice: 59990000, category: "Laptop", image: taingheblt, rating: 4.8, reviews: 145 },
-];
-
-const categories = ["Tất cả", "Laptop", "Điện thoại", "Tai nghe", "Đồng hồ", "Camera"];
-
-const categoryMap: Record<string, string> = {
-    laptops: "Laptop",
-    smartphones: "Điện thoại",
-    earphones: "Tai nghe",
-    wristwatch: "Đồng hồ",
-    camera: "Camera",
-};
+import { getProducts, getCategories } from "@/api/products";
+import type { ProductListDTO } from "@/types/ProductListDTO";
+import type { CategoryDTO } from "@/types/CategoryDTO";
 
 const sortOptions = [
     { label: "Mới nhất", value: "newest" },
@@ -52,78 +22,106 @@ const sortOptions = [
     { label: "Đánh giá cao nhất", value: "rating" },
 ];
 
-const ProductsPage = () => {
+const ProductsPage: React.FC = () => {
     const [searchParams] = useSearchParams();
-    const categoryFromURL = searchParams.get("category") || "";
-    const [selectedCategory, setSelectedCategory] = useState("Tất cả");
-    const [sortBy, setSortBy] = useState("newest");
-    const [priceRange, setPriceRange] = useState<number[]>([0, 60000000]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const categoryFromURL = searchParams.get("category") ?? "";
 
+    const [categories, setCategories] = useState<CategoryDTO[]>([]);
+    const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>("all");
+    const [sortBy, setSortBy] = useState<string>("newest");
+    const [priceRange, setPriceRange] = useState<number[]>([0, 60000000]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+
+    const [products, setProducts] = useState<ProductListDTO[]>([]);
+    const [totalPages, setTotalPages] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    // Load categories
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const data = await getCategories();
+                setCategories(data);
+            } catch (err) {
+                console.error("Lỗi khi load categories:", err);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    // Cập nhật category từ URL
     useEffect(() => {
         if (categoryFromURL) {
-            setSelectedCategory(categoryMap[categoryFromURL]);
+            const found = categories.find((c) => c.slug === categoryFromURL);
+            setSelectedCategorySlug(found ? found.slug : "all");
         }
-    }, [categoryFromURL]);
+    }, [categoryFromURL, categories]);
 
-    const itemsPerPage = 6;
+    // Load products
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true);
+            try {
+                const data = await getProducts({
+                    category: selectedCategorySlug !== "all" ? selectedCategorySlug : undefined,
+                    minPrice: priceRange[0],
+                    maxPrice: priceRange[1],
+                    page: currentPage - 1,
+                    size: 8,
+                    sort: sortBy,
+                });
+                setProducts(data.content);
+                setTotalPages(data.totalPages);
+            } catch (err) {
+                console.error("Lỗi khi load products:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+    }, [selectedCategorySlug, priceRange, sortBy, currentPage]);
 
-    const filteredProducts = useMemo(() => {
-        let filtered = allProducts;
-
-        if (selectedCategory !== "Tất cả") {
-            filtered = filtered.filter((p) => p.category === selectedCategory);
-        }
-
-        filtered = filtered.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
-
-        if (sortBy === "price-low") filtered.sort((a, b) => a.price - b.price);
-        else if (sortBy === "price-high") filtered.sort((a, b) => b.price - a.price);
-        else if (sortBy === "rating") filtered.sort((a, b) => b.rating - a.rating);
-
-        return filtered;
-    }, [selectedCategory, sortBy, priceRange]);
-
-    const paginatedProducts = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
-    }, [filteredProducts, currentPage]);
-
-    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    // Lấy tên category từ slug để hiển thị
+    const getCategoryName = (slug: string) => {
+        if (slug === "all") return "Tất cả";
+        const found = categories.find((c) => c.slug === slug);
+        return found ? found.name : "Tất cả";
+    };
 
     return (
         <div className="d-flex flex-column min-vh-100">
             <Header />
 
             <main className="flex-fill">
-                <Breadcrumbs category={selectedCategory !== "Tất cả" ? selectedCategory : undefined} />
+                <Breadcrumbs category={getCategoryName(selectedCategorySlug)} />
 
                 <div className="container py-4">
                     <div className="row">
-
-                        {/* ============================ FILTER SIDEBAR ============================ */}
+                        {/* FILTER */}
                         <div className="col-md-3 mb-4">
                             <Filters
-                                selectedCategory={selectedCategory}
-                                categories={categories}
+                                selectedCategory={getCategoryName(selectedCategorySlug)}
+                                categories={["Tất cả", ...categories.map((c) => c.name)]}
                                 priceRange={priceRange}
-                                onCategoryChange={(cat) => {
-                                    setSelectedCategory(cat);
+                                onCategoryChange={(catName) => {
+                                    if (catName === "Tất cả") setSelectedCategorySlug("all");
+                                    else {
+                                        const cat = categories.find((c) => c.name === catName);
+                                        setSelectedCategorySlug(cat ? cat.slug : "all");
+                                    }
                                     setCurrentPage(1);
                                 }}
                                 onPriceChange={(range) => setPriceRange(range)}
                             />
                         </div>
 
-                        {/* ============================ PRODUCT LIST ============================ */}
+                        {/* PRODUCT LIST */}
                         <div className="col-md-9">
                             <div className="d-flex flex-wrap justify-content-between align-items-center mb-3">
                                 <Typography variant="body2" color="text.secondary">
-                                    Hiển thị <strong>{paginatedProducts.length}</strong> /{" "}
-                                    <strong>{filteredProducts.length}</strong> sản phẩm
+                                    Hiển thị <strong>{products.length}</strong> sản phẩm
                                 </Typography>
 
-                                {/* ============================ SORT SELECT COMPONENT ============================ */}
                                 <SortSelect
                                     sortBy={sortBy}
                                     sortOptions={sortOptions}
@@ -135,16 +133,30 @@ const ProductsPage = () => {
                             </div>
 
                             <div className="row g-3">
-                                {paginatedProducts.map((product) => (
-                                    <div key={product.id} className="col-sm-6 col-lg-4">
-                                        <Link key={product.id} to={`/products/${product.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                                            <ProductCard product={product} />
+                                {loading ? (
+                                    <Typography>Đang tải...</Typography>
+                                ) : products.length === 0 ? (
+                                    <Typography>Không có sản phẩm</Typography>
+                                ) : (
+                                    products.map((product) => (
+                                        <Link key={product.id} to={`/products/${product.id}`} className="col-sm-6 col-lg-4" style={{ textDecoration: "none", color: "inherit" }}>
+                                            <ProductCard
+                                                product={{
+                                                    id: product.id,
+                                                    name: product.name,
+                                                    category: product.category,
+                                                    price: Number(product.price),
+                                                    originalPrice: Number(product.originalPrice),
+                                                    rating: Number(product.avgRating),
+                                                    reviews: product.totalReviews,
+                                                    image: product.thumbnail,
+                                                }}
+                                            />
                                         </Link>
-                                    </div>
-                                ))}
+                                    ))
+                                )}
                             </div>
 
-                            {/* ============================ PAGINATION ============================ */}
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}

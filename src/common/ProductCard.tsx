@@ -128,7 +128,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <Button
                     variant="contained"
                     fullWidth
-                    startIcon={<ShoppingCartIcon />}
                     sx={{
                         borderRadius: 2,
                         fontWeight: 500,
