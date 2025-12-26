@@ -1,48 +1,68 @@
-import {Box, Container, Divider, Link, Stack, Typography} from "@mui/material";
-import React from "react";
-// import AccountInformation   from "../../components/client/profile/AccountInformation";
-import {Link as RouterLink, useLocation } from "react-router-dom";
+import React, { useState, useRef } from "react"
+import Header from "@/common/Header.tsx"
+import Footer from "@/common/Footer.tsx"
+import AccountSidebar from "@/components/account/sidebar/AccoutSidebar.tsx"
+import type { AccountSection } from "@/types/account"
+import ProfileContent from "@/components/account/ProfileContent.tsx"
+import OrdersContent from "@/components/account/OrdersContent.tsx"
+import WishlistContent from "@/components/account/WishlistContent.tsx"
+import SettingsContent from "@/components/account/SettingsContent.tsx"
 
-const InformationPage = () => {
-    const location = useLocation();
-    const pathName = location.pathname.split("/")[2];
+
+export default function AccountPage(): React.ReactElement {
+    const [activeSection, setActiveSection] = useState<AccountSection>("profile");
+    const [avatarUrl, setAvatarUrl] = useState<string>();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setAvatarUrl(url);
+            console.log("[v0] Avatar file selected:", file.name);
+        }
+    };
 
     return (
-        <Box sx={{ my: 3}}>
-            {/*title*/}
-            <Box className="mb-4">
-                <Typography variant="h4" fontWeight="bold" gutterBottom sx={{pt:2, textAlign: 'center' }}>
-                    Tài khoản của bạn
-                </Typography>
-                <Box sx={{width: '70px', height: '4px', backgroundColor: '#333', margin: '0 auto', borderRadius: '2px'}}/>
-            </Box>
-            <Divider sx={{ my: 2, height: '1px', backgroundColor: 'black' }} />
-            {/*content*/}
-            <Container sx={{ mt: 5 }}>
-                <Box className="col-md-12 col-sm-12 col-xs-12">
-                    <Box className="row">
-                        {/*tab menu*/}
-                        <Box className="col-md-3 col-sm-12 col-xs-12">
-                            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ pb: 4}}>TÀI KHOẢN</Typography>
-                            <Stack spacing={2}>
-                                <Link component={RouterLink} className={`pb-1 text-black text-decoration-none ${pathName === "information" ? "fw-bold" : ""}`} to={"/profile/information"}>Thông tin tài khoản</Link>
-                                <Link component={RouterLink} className={`pb-1 text-black text-decoration-none ${pathName === "address" ? "fw-bold" : ""}`} to={"/profile/address"}>Danh sách địa chỉ</Link>
-                            </Stack>
-                        </Box>
-                        {/*infor*/}
-                        <Box className="col-md-9 col-sm-12 col-xs-12">
-                            {/*<AccountInformation*/}
-                            {/*    email="vanhafpt2018@gmail.com"*/}
-                            {/*    lastName="Trần Văn"*/}
-                            {/*    firstName="Hà"*/}
-                            {/*    gender="male"*/}
-                            {/*    dob="2002-08-09"*/}
-                            {/*/>*/}
-                        </Box>
-                    </Box>
-                </Box>
-            </Container>
-        </Box>
+        <div className="d-flex flex-column min-vh-100">
+            <Header />
+            <main className="flex-grow-1 bg-light py-5">
+                <div className="container px-4">
+                    <div className="row g-5">
+                        {/* Sidebar Navigation */}
+                        <AccountSidebar
+                            avatarUrl={avatarUrl}
+                            activeSection={activeSection}
+                            onChangeSection={setActiveSection}
+                            onChangeAvatarClick={() => fileInputRef.current?.click()}
+                        />
+                        {/* Main Content */}
+                        <div className="col-12 col-md-8 col-lg-9">
+                            {activeSection === "profile" && (
+                                <ProfileContent
+                                    activeSection={activeSection}
+                                    avatarUrl={avatarUrl}
+                                    fileInputRef={fileInputRef}
+                                    onAvatarChange={handleAvatarChange}
+                                />
+                            )}
+
+                            {activeSection === "orders" && (
+                                <OrdersContent />
+                            )}
+
+                            {activeSection === "wishlist" && (
+                                <WishlistContent />
+                            )}
+
+                            {activeSection === "settings" && (
+                                <SettingsContent />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <Footer />
+        </div>
     );
 }
-export default InformationPage;
