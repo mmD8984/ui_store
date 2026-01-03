@@ -11,7 +11,6 @@ import {
     Rating,
 } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 interface Product {
     id: number;

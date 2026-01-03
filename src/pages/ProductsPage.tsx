@@ -11,7 +11,7 @@ import Pagination from "@/components/products/Pagination";
 import SortSelect from "@/components/products/SortSelect";
 import ProductCard from "@/common/ProductCard";
 
-import { getProducts, getCategories } from "@/api/products";
+import { getProducts, getCategories } from "@/api/product.api.ts";
 import type { ProductListDTO } from "@/types/ProductListDTO";
 import type { CategoryDTO } from "@/types/CategoryDTO";
 

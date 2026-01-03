@@ -8,9 +8,3 @@ export interface ProductListDTO {
     totalReviews: number;
     thumbnail: string;
 }
-
-export interface CategoryDTO {
-    id: number;
-    name: string;
-    slug: string;
-}

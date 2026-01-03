@@ -1,4 +1,4 @@
-import { auth, googleProvider } from "./firebase";
+import { auth, googleProvider } from "../firebase/firebase.ts";
 import { FirebaseError } from "firebase/app";
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut } from "firebase/auth";
 

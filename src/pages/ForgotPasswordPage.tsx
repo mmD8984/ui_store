@@ -13,7 +13,7 @@ import {
 import { ArrowBack } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
-import { sendPasswordReset } from "../firebase/firebaseAuth";
+import { sendPasswordReset } from "../api/firebase-auth.api.ts";
 
 interface FormData {
     account: string;

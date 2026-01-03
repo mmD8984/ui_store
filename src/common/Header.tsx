@@ -5,7 +5,7 @@ import {MenuIcon, ShoppingCart, User} from "lucide-react";
 import SearchBar from "./SearchBar.tsx";
 import { useCartStore } from "@/lib/cart-store.ts";
 import { useAuth } from "@/contexts/useAuth";
-import { logoutUser } from "../firebase/firebaseAuth";
+import { logoutUser } from "../api/firebase-auth.api.ts";
 
 const Header: React.FC = () => {
     const cartCount = useCartStore((state) => state.getTotalItems());

@@ -8,7 +8,7 @@ import Stack from "@mui/material/Stack";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
-import { getProducts } from "@/api/products"; // API call
+import { getProducts } from "@/api/product.api.ts";
 import type { ProductListDTO } from "@/types/ProductListDTO";
 
 const FeaturedProducts: React.FC = () => {

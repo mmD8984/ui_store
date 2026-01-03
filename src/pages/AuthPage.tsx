@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
-import { loginWithGoogle, loginWithEmailPassword, registerWithEmailPassword } from "../firebase/firebaseAuth";
-import axiosClient from "../api/axiosClient";
+import { loginWithGoogle, loginWithEmailPassword, registerWithEmailPassword } from "../api/firebase-auth.api.ts";
+import axiosClient from "../lib/axiosClient.ts";
 
 interface AuthPageProps {
     onBack?: () => void;
