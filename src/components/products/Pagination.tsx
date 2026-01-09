@@ -19,6 +19,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                 sx={{
                     color: "#000",
                     borderColor: "#000",
+                    borderRadius: "9999px",
                     "&:hover": { backgroundColor: "#f0f0f0", borderColor: "#000" }
                 }}
             >
@@ -31,6 +32,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                     variant={currentPage === i + 1 ? "contained" : "outlined"}
                     onClick={() => onPageChange(i + 1)}
                     sx={{
+                        minWidth: 40,
+                        height: 40,
+                        borderRadius: "50%",
                         color: currentPage === i + 1 ? "#fff" : "#000",
                         backgroundColor: currentPage === i + 1 ? "#000" : "transparent",
                         borderColor: "#000",
@@ -51,6 +55,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                 sx={{
                     color: "#000",
                     borderColor: "#000",
+                    borderRadius: "9999px",
                     "&:hover": { backgroundColor: "#f0f0f0", borderColor: "#000" }
                 }}
             >

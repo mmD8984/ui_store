@@ -177,6 +177,13 @@ export default function ProductInfo({
                                             : "default"
                                     }
                                     onClick={() => setSelectedColor(color)}
+                                    sx={{
+                                        backgroundColor: color === selectedColor ? '#0dcaf0' : undefined,
+                                        color: color === selectedColor ? '#fff' : undefined,
+                                        '&:hover': {
+                                            backgroundColor: color === selectedColor ? '#0dcaf0' : undefined,
+                                        },
+                                    }}
                                 />
                             ))}
                         </Box>
@@ -204,6 +211,13 @@ export default function ProductInfo({
                                             : "default"
                                     }
                                     onClick={() => setSelectedRam(ram)}
+                                    sx={{
+                                        backgroundColor: ram === selectedRam ? '#0dcaf0' : undefined,
+                                        color: ram === selectedRam ? '#fff' : undefined,
+                                        '&:hover': {
+                                            backgroundColor: ram === selectedRam ? '#0dcaf0' : undefined,
+                                        },
+                                    }}
                                 />
                             ))}
                         </Box>
@@ -231,6 +245,13 @@ export default function ProductInfo({
                                             : "default"
                                     }
                                     onClick={() => setSelectedStorage(storage)}
+                                    sx={{
+                                        backgroundColor: storage === selectedStorage ? '#0dcaf0' : undefined,
+                                        color: storage === selectedStorage ? '#fff' : undefined,
+                                        '&:hover': {
+                                            backgroundColor: storage === selectedStorage ? '#0dcaf0' : undefined,
+                                        },
+                                    }}
                                 />
                             ))}
                         </Box>

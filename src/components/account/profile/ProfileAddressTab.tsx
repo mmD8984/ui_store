@@ -1,48 +1,50 @@
 import { MapPin } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddressCard from "./AddressCard";
 import AddAddress from "./AddAddress";
+import { getAddresses } from "@/api/address.api";
+import type { UserAddress } from "@/api/address.api";
 
 export default function ProfileAddressTab() {
+    const [addresses, setAddresses] = useState<UserAddress[]>([]);
     const [showAddModal, setShowAddModal] = useState(false);
+
+    const loadAddresses = async () => {
+        const data = await getAddresses();
+        setAddresses(data);
+    };
+
+    useEffect(() => {
+        loadAddresses();
+    }, []);
 
     return (
         <>
-            {/* Header */}
             <div className="d-flex align-items-center justify-content-between mb-4">
                 <h4 className="mb-0 fw-semibold">Địa chỉ của tôi</h4>
                 <button
-                    type="button"
                     className="btn btn-outline-dark btn-sm d-flex align-items-center gap-2"
                     onClick={() => setShowAddModal(true)}
                 >
-                    <MapPin className="h-4 w-4" />
+                    <MapPin size={16} />
                     Thêm địa chỉ mới
                 </button>
             </div>
 
-            {/* Address list */}
             <div className="d-flex flex-column gap-4">
-                <AddressCard
-                    name="Nguyễn Văn A"
-                    phone="0901234567"
-                    addressLine="123 Đường ABC, Phường 1, Quận 1"
-                    city="Thành phố Hồ Chí Minh"
-                    isDefault
-                />
-
-                <AddressCard
-                    name="Nguyễn Văn A"
-                    phone="0901234567"
-                    addressLine="456 Đường XYZ, Phường 5, Quận Tân Bình"
-                    city="Thành phố Hồ Chí Minh"
-                />
+                {addresses.map(addr => (
+                    <AddressCard
+                        key={addr.id}
+                        address={addr}
+                        onChange={loadAddresses}
+                    />
+                ))}
             </div>
 
-            {/* Add address modal */}
             <AddAddress
                 show={showAddModal}
                 onClose={() => setShowAddModal(false)}
+                onSuccess={loadAddresses}
             />
         </>
     );

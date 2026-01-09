@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import { User, Phone } from "lucide-react";
 
 // Kiểu dữ liệu cho form
 export interface ShippingInfo {
-    fullName: string;
+    recipientName: string;
     phone: string;
-    address: string;
-    city: string;
-    district: string;
+    addressLine: string;
     ward: string;
+    district: string;
+    province:string;
     isDefault: boolean;
 }
 
@@ -36,68 +36,175 @@ interface AddressFormProps {
 }
 
 const AddressForm: React.FC<AddressFormProps> = ({ value, onChange, onSubmit }) => {
-    const [shippingInfo, setShippingInfo] = useState<ShippingInfo>(
+    const [form, setForm] = useState<ShippingInfo>(
         value || {
-            fullName: "",
+            recipientName: "",
             phone: "",
-            address: "",
-            city: "",
-            district: "",
+            addressLine: "",
             ward: "",
+            district: "",
+            province: "",
             isDefault: false,
         }
     );
 
-    const [cities, setCities] = useState<Province[]>([]);
+    const [provinces, setProvinces] = useState<Province[]>([]);
     const [districts, setDistricts] = useState<District[]>([]);
     const [wards, setWards] = useState<Ward[]>([]);
+
+    const mappedProvinceRef = useRef(false);
+    const mappedDistrictRef = useRef(false);
+    const mappedWardRef = useRef(false);
+
 
     // Lấy danh sách tỉnh/thành phố
     useEffect(() => {
         fetch("https://api.vnappmob.com/api/v2/province/")
             .then(res => res.json())
-            .then((data: { results: Province[] }) => setCities(data.results || []))
-            .catch(() => setCities([]));
+            .then((data: { results: Province[] }) => setProvinces(data.results || []))
+            .catch(() => setProvinces([]));
     }, []);
 
-    // Lấy danh sách quận/huyện khi city thay đổi
+    // Lấy danh sách quận/huyện khi province thay đổi
     useEffect(() => {
-        if (!shippingInfo.city) {
+        if (!form.province) {
             setDistricts([]);
             setWards([]);
             return;
         }
 
-        fetch(`https://api.vnappmob.com/api/v2/province/district/${shippingInfo.city}`)
+        fetch(`https://api.vnappmob.com/api/v2/province/district/${form.province}`)
             .then(res => res.json())
             .then((data: { results: District[] }) => setDistricts(data.results || []))
             .catch(() => setDistricts([]));
-    }, [shippingInfo.city]);
+    }, [form.province]);
 
     // Lấy danh sách phường/xã khi district thay đổi
     useEffect(() => {
-        if (!shippingInfo.district) {
+        if (!form.district) {
             setWards([]);
             return;
         }
 
-        fetch(`https://api.vnappmob.com/api/v2/province/ward/${shippingInfo.district}`)
+        fetch(`https://api.vnappmob.com/api/v2/province/ward/${form.district}`)
             .then(res => res.json())
             .then((data: { results: Ward[] }) => setWards(data.results || []))
             .catch(() => setWards([]));
-    }, [shippingInfo.district]);
+    }, [form.district]);
+
+    // Khi edit → đổ dữ liệu vào form
+    useEffect(() => {
+        if (!value || provinces.length === 0) return;
+        if (mappedProvinceRef.current) return;
+
+        const provinceId = getProvinceIdByName(value.province);
+        if (!provinceId) return;
+
+        mappedProvinceRef.current = true;
+
+        setForm(prev => ({
+            ...prev,
+            province: provinceId,
+        }));
+    }, [value, provinces]);
+
+    useEffect(() => {
+        if (!value || !form.province || districts.length === 0) return;
+        if (mappedDistrictRef.current) return;
+
+        const districtId = getDistrictIdByName(value.district);
+        if (!districtId) return;
+
+        mappedDistrictRef.current = true;
+
+        setForm(prev => ({
+            ...prev,
+            district: districtId,
+        }));
+    }, [districts, form.province]);
+
+
+    useEffect(() => {
+        if (!value || !form.district || wards.length === 0) return;
+        if (mappedWardRef.current) return;
+
+        const wardId = getWardIdByName(value.ward);
+        if (!wardId) return;
+
+        mappedWardRef.current = true;
+
+        setForm(prev => ({
+            ...prev,
+            ward: wardId,
+        }));
+    }, [wards, form.district]);
+
+    useEffect(() => {
+        mappedProvinceRef.current = false;
+        mappedDistrictRef.current = false;
+        mappedWardRef.current = false;
+    }, [value]);
+
+
+    // convert id sang name
+    const getProvinceName = (id: string) => provinces.find(p => p.province_id === id)?.province_name || "";
+    const getDistrictName = (id: string) => districts.find(d => d.district_id === id)?.district_name || "";
+    const getWardName = (id: string) => wards.find(w => w.ward_id === id)?.ward_name || "";
+
+    // convert name sang id
+    const getProvinceIdByName = (name: string) => provinces.find(p => p.province_name === name)?.province_id || "";
+    const getDistrictIdByName = (name: string) => districts.find(d => d.district_name === name)?.district_id || "";
+    const getWardIdByName = (name: string) => wards.find(w => w.ward_name === name)?.ward_id || "";
 
     // Cập nhật dữ liệu form và gọi callback onChange
     const handleChange = (field: keyof ShippingInfo, val: string | boolean) => {
-        const updated = { ...shippingInfo, [field]: val };
-        setShippingInfo(updated);
-        onChange?.(updated);
+        // Nếu đổi tỉnh → reset quận & phường
+        if (field === "province") {
+            setForm(prev => {
+                const updated = {
+                    ...prev,
+                    province: val as string,
+                    district: "",
+                    ward: "",
+                };
+                onChange?.(updated);
+                return updated;
+            });
+            return;
+        }
+
+        // Nếu đổi quận → reset phường
+        if (field === "district") {
+            setForm(prev => {
+                const updated = {
+                    ...prev,
+                    district: val as string,
+                    ward: "",
+                };
+                onChange?.(updated);
+                return updated;
+            });
+            return;
+        }
+
+        // Các field khác
+        if (form[field] !== val) {
+            const updated = { ...form, [field]: val };
+            setForm(updated);
+            onChange?.(updated);
+        }
     };
 
     // Submit form
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onSubmit?.(shippingInfo);
+        const submitData: ShippingInfo = {
+            ...form,
+            province: getProvinceName(form.province),
+            district: getDistrictName(form.district),
+            ward: getWardName(form.ward),
+        };
+        onSubmit?.(submitData);
     };
 
     return (
@@ -112,8 +219,9 @@ const AddressForm: React.FC<AddressFormProps> = ({ value, onChange, onSubmit }) 
                     <input
                         className="form-control"
                         required
-                        value={shippingInfo.fullName}
-                        onChange={e => handleChange("fullName", e.target.value)}
+                        value={form.recipientName}
+                        onChange={e => handleChange("recipientName", e.target.value)}
+                        placeholder="Trần Văn A"
                     />
                 </div>
 
@@ -126,8 +234,9 @@ const AddressForm: React.FC<AddressFormProps> = ({ value, onChange, onSubmit }) 
                     <input
                         className="form-control"
                         required
-                        value={shippingInfo.phone}
+                        value={form.phone}
                         onChange={e => handleChange("phone", e.target.value)}
+                        placeholder="0123456789"
                     />
                 </div>
 
@@ -137,13 +246,13 @@ const AddressForm: React.FC<AddressFormProps> = ({ value, onChange, onSubmit }) 
                     <select
                         className="form-select"
                         required
-                        value={shippingInfo.city}
-                        onChange={e => handleChange("city", e.target.value)}
+                        value={form.province}
+                        onChange={e => handleChange("province", e.target.value)}
                     >
                         <option value="">Chọn tỉnh</option>
-                        {cities.map(c => (
-                            <option key={c.province_id} value={c.province_id}>
-                                {c.province_name}
+                        {provinces.map(p => (
+                            <option key={p.province_id} value={p.province_id}>
+                                {p.province_name}
                             </option>
                         ))}
                     </select>
@@ -155,8 +264,8 @@ const AddressForm: React.FC<AddressFormProps> = ({ value, onChange, onSubmit }) 
                     <select
                         className="form-select"
                         required
-                        value={shippingInfo.district}
-                        disabled={!shippingInfo.city}
+                        value={form.district}
+                        disabled={!form.province}
                         onChange={e => handleChange("district", e.target.value)}
                     >
                         <option value="">Chọn quận</option>
@@ -174,8 +283,8 @@ const AddressForm: React.FC<AddressFormProps> = ({ value, onChange, onSubmit }) 
                     <select
                         className="form-select"
                         required
-                        value={shippingInfo.ward}
-                        disabled={!shippingInfo.district}
+                        value={form.ward}
+                        disabled={!form.district}
                         onChange={e => handleChange("ward", e.target.value)}
                     >
                         <option value="">Chọn phường</option>
@@ -194,8 +303,8 @@ const AddressForm: React.FC<AddressFormProps> = ({ value, onChange, onSubmit }) 
                         className="form-control"
                         rows={3}
                         required
-                        value={shippingInfo.address}
-                        onChange={e => handleChange("address", e.target.value)}
+                        value={form.addressLine}
+                        onChange={e => handleChange("addressLine", e.target.value)}
                         placeholder="Số nhà, tên đường..."
                     />
                 </div>
@@ -206,7 +315,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ value, onChange, onSubmit }) 
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={shippingInfo.isDefault}
+                            checked={form.isDefault}
                             onChange={e => handleChange("isDefault", e.target.checked)}
                             id="setDefault"
                         />

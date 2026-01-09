@@ -1,16 +1,10 @@
 import React from "react";
-import {
-    User,
-    Package,
-    Heart,
-    Settings,
-    LogOut,
-    Camera,
-} from "lucide-react";
+import {User, Package, Heart, Settings, LogOut, Camera,} from "lucide-react";
 import { SidebarItem } from "@/components/account/sidebar/SidebarItem.tsx";
 
 interface ProfileSidebarProps {
     avatarUrl?: string;
+    fullName?: string | null;
     activeSection: "profile" | "orders" | "wishlist" | "settings";
     onChangeSection: (section: ProfileSidebarProps["activeSection"]) => void;
     onChangeAvatarClick: () => void;
@@ -18,6 +12,7 @@ interface ProfileSidebarProps {
 
 const AccountSidebar: React.FC<ProfileSidebarProps> = ({
                                                            avatarUrl,
+                                                           fullName,
                                                            activeSection,
                                                            onChangeSection,
                                                            onChangeAvatarClick,
@@ -44,21 +39,19 @@ const AccountSidebar: React.FC<ProfileSidebarProps> = ({
                                 )}
                             </div>
 
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle shadow-lg opacity-0 hover:opacity-100 transition-opacity"
-                                style={{ width: 24, height: 24 }}
-                                onClick={onChangeAvatarClick}
-                            >
-                                <Camera className="h-3 w-3" />
-                            </button>
+                            {/*<button*/}
+                            {/*    type="button"*/}
+                            {/*    className="btn btn-primary btn-sm position-absolute bottom-0 end-0 rounded-circle shadow-lg opacity-0 hover:opacity-100 transition-opacity"*/}
+                            {/*    style={{ width: 24, height: 24 }}*/}
+                            {/*    onClick={onChangeAvatarClick}*/}
+                            {/*>*/}
+                            {/*    <Camera className="h-3 w-3" />*/}
+                            {/*</button>*/}
                         </div>
 
                         <div>
-                            <h5 className="mb-1 fw-semibold">Nguyễn Văn A</h5>
-                            <p className="mb-0 text-muted small">
-                                Khách hàng thân thiết
-                            </p>
+                            <h5 className="mb-1 fw-semibold">{fullName ?? "Chưa cập nhật"}</h5>
+                            <p className="mb-0 text-muted small">Khách hàng</p>
                         </div>
                     </div>
                 </div>

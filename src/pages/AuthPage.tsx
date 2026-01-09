@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-    Box,
-    TextField,
-    Typography,
-    Button,
-    Snackbar,
-    Alert,
-    Divider,
-} from "@mui/material";
+import {Box, TextField, Typography, Button, Snackbar, Alert, Divider} from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { loginWithGoogle, loginWithEmailPassword, registerWithEmailPassword } from "../api/firebase-auth.api.ts";
